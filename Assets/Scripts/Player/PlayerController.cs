@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     [Header("Player References")]
     public Transform playerBody;
     public Transform cameraAssembly;
+    public MeshFilter playerMesh;
+    
 
     [Header("Physics")]
     public float playerRadius = 0.4f;
@@ -17,6 +19,13 @@ public class PlayerController : MonoBehaviour
     public float accelMultiplier = 10;
     public Vector2 position;
     public Vector2 velocity;
+    
+    [Header("Visuals")]
+    public Mesh[] playerAnimateMeshes;
+    public float distanceBetweenSteps = 0.4f;
+    public float distanceSinceLastStep = 0;
+    private bool stepState = false;
+    private bool stepSide = false;
     
     [Header("Input")]
     private Vector2 lastInput = Vector2.zero;
@@ -37,6 +46,8 @@ public class PlayerController : MonoBehaviour
         Vector2 accelVec = lastInput * (accelMultiplier * Time.fixedDeltaTime);
         Vector2 dragVec = -velocity * (drag * Time.fixedDeltaTime);
 
+        Vector2 prevPos = position;
+        
         velocity += accelVec + dragVec;
         
         // Check the walls
@@ -45,6 +56,23 @@ public class PlayerController : MonoBehaviour
             Vector2 qStep = (velocity / 4.0f) * Time.fixedDeltaTime;
             position += qStep;
             CollisionCheck();
+        }
+
+        // Animate the player
+        if (lastInput != Vector2.zero)
+            distanceSinceLastStep += Vector2.Distance(prevPos, position);
+        else
+            stepState = false;
+            
+        if (distanceSinceLastStep > distanceBetweenSteps)
+        {
+            distanceSinceLastStep = 0;
+            playerMesh.mesh = stepState ? playerAnimateMeshes[1] : playerAnimateMeshes[0];
+            playerMesh.transform.localScale = stepSide ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
+            
+            if (stepState) stepSide = !stepSide;
+            stepState = !stepState;
+            
         }
         
         playerBody.position = new Vector3(position.x, 0, position.y);

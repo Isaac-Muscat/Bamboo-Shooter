@@ -145,14 +145,14 @@ public class RoomSpawn : MonoBehaviour
             FindDoorConnection(unexplored);
         }
         
-        // Generate the door to the center room
+        // TODO: Generate the door to the center room
         
 
 
         // Draw the room
         for (int i = 0; i < floorState.Length; i++)
         {
-            if (floorState[i] == 0) continue;
+            if (floorState[i] == 0 || floorState[i] == 1) continue;
             GameObject tile = Instantiate(tiles[floorState[i]], transform);
             Vector2Int pos = IDXToXY(i);
             tile.transform.position = new Vector3(pos.x, 0, pos.y);
