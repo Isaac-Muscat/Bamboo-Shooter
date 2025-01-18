@@ -24,7 +24,7 @@ public class BambooSeed : MonoBehaviour
     public const float branchingCountRangeFactor = 10;
 
     private List<BambooShoot> spawnedBamboo = new List<BambooShoot>(); // List to store spawned prefabs
-    public HashSet<PosStatePair> spawnPossibilities = new HashSet<PosStatePair>();
+    public Dictionary<PosStatePair, int> spawnPossibilities = new Dictionary<PosStatePair, int>();
 
     // Grid
     public int[] bambooState;
@@ -46,7 +46,8 @@ public class BambooSeed : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Grow();
+            PosStatePair selected = spawnedBamboo[Random.Range(0, spawnedBamboo.Count)].posState;
+            DeleteBamboo(selected);
         }
     }
 
@@ -61,8 +62,19 @@ public class BambooSeed : MonoBehaviour
     {
         return new Vector2Int(idx % roomSpawn.buildingDimensions.x, idx / roomSpawn.buildingDimensions.y);
     }
+    void BambooIncr(Dictionary<PosStatePair, int> dict, PosStatePair key, int val)
+    {
+        if (dict.ContainsKey(key))
+        {
+            dict[key] += val;
+        }
+        else
+        {
+            dict[key] = 1;
+        }
+    }
 
-    void AddGrowthPossibilities(PosStatePair bambooShoot)
+    void AddGrowthPossibilities(PosStatePair bambooShoot, int val)
     {
         int x = bambooShoot.pos.x;
         int y = bambooShoot.pos.y;
@@ -70,23 +82,22 @@ public class BambooSeed : MonoBehaviour
         int same = GetTile(x, y);
         if (same != -1)
         {
-
-            if ((same & (int)BambooState.X) == 0) spawnPossibilities.Add(new PosStatePair(new Vector2Int(x, y), BambooState.X));
-            if ((same & (int)BambooState.Z) == 0) spawnPossibilities.Add(new PosStatePair(new Vector2Int(x, y), BambooState.Z));
+            if ((same & (int)BambooState.X) == 0) BambooIncr(spawnPossibilities, new PosStatePair(new Vector2Int(x, y), BambooState.X), val);
+            if ((same & (int)BambooState.Z) == 0) BambooIncr(spawnPossibilities, new PosStatePair(new Vector2Int(x, y), BambooState.Z), val);
         }
 
         if (bambooShoot.state == BambooState.X)
         {
             int pos_x = GetTile(x + 1, y);
             int neg_x = GetTile(x - 1, y);
-            if (pos_x != -1 && ((pos_x & (int)BambooState.X) == 0)) spawnPossibilities.Add(new PosStatePair(new Vector2Int(x + 1, y), BambooState.X));
-            if (neg_x != -1 && ((neg_x & (int)BambooState.X) == 0)) spawnPossibilities.Add(new PosStatePair(new Vector2Int(x - 1, y), BambooState.X));
+            if (pos_x != -1 && ((pos_x & (int)BambooState.X) == 0)) BambooIncr(spawnPossibilities, new PosStatePair(new Vector2Int(x + 1, y), BambooState.X), val);
+            if (neg_x != -1 && ((neg_x & (int)BambooState.X) == 0)) BambooIncr(spawnPossibilities, new PosStatePair(new Vector2Int(x - 1, y), BambooState.X), val);
         } else if (bambooShoot.state == BambooState.Z)
         {
             int pos_y = GetTile(x, y + 1);
             int neg_y = GetTile(x, y - 1);
-            if (pos_y != -1 && ((pos_y & (int)BambooState.Z) == 0)) spawnPossibilities.Add(new PosStatePair(new Vector2Int(x, y + 1), BambooState.Z));
-            if (neg_y != -1 && ((neg_y & (int)BambooState.Z) == 0)) spawnPossibilities.Add(new PosStatePair(new Vector2Int(x, y - 1), BambooState.Z));
+            if (pos_y != -1 && ((pos_y & (int)BambooState.Z) == 0)) BambooIncr(spawnPossibilities, new PosStatePair(new Vector2Int(x, y + 1), BambooState.Z), val);
+            if (neg_y != -1 && ((neg_y & (int)BambooState.Z) == 0)) BambooIncr(spawnPossibilities, new PosStatePair(new Vector2Int(x, y - 1), BambooState.Z), val);
         }
     }
 
@@ -111,9 +122,10 @@ public class BambooSeed : MonoBehaviour
             rotation = Quaternion.Euler(0, 90f, 0);
         }
         PosStatePair cur_possibility = new PosStatePair(new Vector2Int(x, y), state);
-        AddGrowthPossibilities(cur_possibility);
+        AddGrowthPossibilities(cur_possibility, 1);
         spawnPossibilities.Remove(cur_possibility);
         BambooShoot newBamboo = Instantiate(bambooPrefab1, position, rotation).GetComponent<BambooShoot>();
+        newBamboo.posState = cur_possibility;
         newBamboo.seed = this;
         spawnedBamboo.Add(newBamboo);
         return newBamboo;
@@ -137,29 +149,41 @@ public class BambooSeed : MonoBehaviour
             {
                 Destroy(bambmooShoot.gameObject);
                 spawnedBamboo.Remove(bambmooShoot);
-                // FIXME Need to remove neigbours from list of possible growth options
+                // FIXME Need to decrement neigbours from list of possible growth options
             }
         }
     }
     public void DeleteBamboo(PosStatePair posState)
     {
+        BambooShoot to_delete = null;
         foreach (BambooShoot bambooShoot in spawnedBamboo)
         {
             if (bambooShoot.posState.pos.x == posState.pos.x && bambooShoot.posState.pos.y == posState.pos.y &&
                 bambooShoot.posState.state == posState.state)
             {
-                Destroy(bambooShoot.gameObject);
-                spawnedBamboo.Remove(bambooShoot);
-                // FIXME Need to remove neigbours from list of possible growth options
+                to_delete = bambooShoot;
+                break;
             }
+        }
+        if (to_delete != null)
+        {
+            Debug.Log("IN DELETE");
+            Destroy(to_delete.gameObject);
+            spawnedBamboo.Remove(to_delete);
+            // FIXME Need to remove neigbours from list of possible growth options
+            AddGrowthPossibilities(posState, -1);
         }
     }
 
 
     PosStatePair SelectTunnelVisionBamboo()
     {
-        PosStatePair selected = new List<PosStatePair>(spawnPossibilities)[Random.Range(0, spawnPossibilities.Count)];
-        Debug.Log(selected.pos.x + ", " + selected.pos.y);
+        PosStatePair selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
+        while (spawnPossibilities[selected] == 0)
+        {
+            spawnPossibilities.Remove(selected);
+            selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
+        }
         return selected;
     }
 
@@ -184,7 +208,7 @@ public class BambooSeed : MonoBehaviour
         if (tunnelVisionMode)
         {
             PosStatePair selected = new PosStatePair(new Vector2Int(tunnelVisionBamboo.pos.x, tunnelVisionBamboo.pos.y), tunnelVisionBamboo.state);
-            if (spawnPossibilities.Contains(selected))
+            if (spawnPossibilities.ContainsKey(selected))
             {
                 SetTile(selected.pos.x, selected.pos.y, selected.state);
             } else
@@ -201,7 +225,7 @@ public class BambooSeed : MonoBehaviour
             }
         } else
         {
-            PosStatePair selected = new List<PosStatePair>(spawnPossibilities)[Random.Range(0, spawnPossibilities.Count)];
+            PosStatePair selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
             SetTile(selected.pos.x, selected.pos.y, selected.state);
 
             if (Random.Range(0.0f, 1.0f) < tunnelVisionChance)
