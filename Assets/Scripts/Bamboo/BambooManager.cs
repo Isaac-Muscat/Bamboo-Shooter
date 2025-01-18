@@ -37,17 +37,19 @@ public class BambooManager : MonoBehaviour
         spawnedBambooSeeds.Add(newBambooSeed);
     }
 
-    Gameobject SelectSeed() {
+    GameObject SelectSeed() {
         if (spawnedBambooSeeds.Count > 0)
         {
-            int randomIndex = Random.Range(0, spawnedBamboos.Count);
-            GameObject randomBamboo = spawnedBamboos[randomIndex];
+            int randomIndex = Random.Range(0, spawnedBambooSeeds.Count);
+            GameObject randomBamboo = spawnedBambooSeeds[randomIndex];
             return randomBamboo;
         }
+
+        return null;
     }
 
     void GrowBamboo() {
-        Gameobject seed = SelectSeed();
-        Seed.Grow();
+        GameObject seed = SelectSeed();
+        //seed.Grow();
     }
 }

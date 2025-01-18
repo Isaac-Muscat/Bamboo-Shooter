@@ -29,21 +29,7 @@ public class RoomSpawn : MonoBehaviour
     public List<int> unexploredSeeds;
     public List<int> exploredTiles;
 
-    void Start()
-    {
-        GenerateRooms();
-    }
-
-    void Update()
-    {
-        if (regenerate)
-        {
-            regenerate = false;
-            GenerateRooms();
-        }
-    }
-
-    private int XYToIDX(int x, int y)
+    public int XYToIDX(int x, int y)
     {
         if (x < 0 || y < 0) return -1;
         if (x >= buildingDimensions.x || y >= buildingDimensions.y) return -1;
@@ -177,11 +163,11 @@ public class RoomSpawn : MonoBehaviour
     {
         if (!unexploredSeeds.Remove(currentSeedIDX))
         {
-            Debug.Log("Failed to remove " + currentSeedIDX);
+            //Debug.Log("Failed to remove " + currentSeedIDX);
         }
         else
         {
-            Debug.Log("REMOVED " + currentSeedIDX);
+            //Debug.Log("REMOVED " + currentSeedIDX);
         }
         foreach(int tile in seeds[currentSeedIDX].tiles) exploredTiles.Add(tile);
         Vector2Int seedPos = seeds[currentSeedIDX].pos;
@@ -201,7 +187,7 @@ public class RoomSpawn : MonoBehaviour
                     {
                         if (seeds[unexplored].tiles.Contains(XYToIDX(doorIDX + 1, seedPos.y)))
                         {
-                            Debug.Log("Found door from "+currentSeedIDX+" to " + unexplored);
+                            //Debug.Log("Found door from "+currentSeedIDX+" to " + unexplored);
                             // GENERATE THE DOOR
                             SetTile(doorIDX, seedPos.y, 3);
                             RecurseDoors(unexplored);
@@ -228,7 +214,7 @@ public class RoomSpawn : MonoBehaviour
                     {
                         if (seeds[unexplored].tiles.Contains(XYToIDX(seedPos.x, doorIDX + 1)))
                         {
-                            Debug.Log("Found door from "+currentSeedIDX+" to " + unexplored);
+                            //Debug.Log("Found door from "+currentSeedIDX+" to " + unexplored);
                             // GENERATE THE DOOR
                             SetTile(seedPos.x, doorIDX, 3);
                             RecurseDoors(unexplored);
@@ -255,7 +241,7 @@ public class RoomSpawn : MonoBehaviour
                     {
                         if (seeds[unexplored].tiles.Contains(XYToIDX(doorIDX - 1, seedPos.y)))
                         {
-                            Debug.Log("Found door from "+currentSeedIDX+" to " + unexplored);
+                            //Debug.Log("Found door from "+currentSeedIDX+" to " + unexplored);
                             // GENERATE THE DOOR
                             SetTile(doorIDX, seedPos.y, 3);
                             RecurseDoors(unexplored);
@@ -282,7 +268,7 @@ public class RoomSpawn : MonoBehaviour
                     {
                         if (seeds[unexplored].tiles.Contains(XYToIDX(seedPos.x, doorIDX - 1)))
                         {
-                            Debug.Log("Found door from "+currentSeedIDX+" to " + unexplored);
+                            //Debug.Log("Found door from "+currentSeedIDX+" to " + unexplored);
                             // GENERATE THE DOOR
                             SetTile(seedPos.x, doorIDX, 3);
                             RecurseDoors(unexplored);
@@ -310,7 +296,7 @@ public class RoomSpawn : MonoBehaviour
                     int newPathIdx = XYToIDX(doorIDX + 1, seedPos.y);
                     if (!exploredTiles.Contains(newPathIdx)) break;
 
-                    Debug.Log("Found nonsense door to " + currentSeedIDX);
+                    //Debug.Log("Found nonsense door to " + currentSeedIDX);
                     // GENERATE THE DOOR
                     SetTile(doorIDX, seedPos.y, 3);
                     return;
@@ -329,7 +315,7 @@ public class RoomSpawn : MonoBehaviour
                     int newPathIdx = XYToIDX(seedPos.x, doorIDX + 1);
                     if (!exploredTiles.Contains(newPathIdx)) break;
 
-                    Debug.Log("Found nonsense door to " + currentSeedIDX);
+                    //Debug.Log("Found nonsense door to " + currentSeedIDX);
                     // GENERATE THE DOOR
                     SetTile(seedPos.x, doorIDX, 3);
                     return;
@@ -348,7 +334,7 @@ public class RoomSpawn : MonoBehaviour
                     int newPathIdx = XYToIDX(doorIDX - 1, seedPos.y);
                     if (!exploredTiles.Contains(newPathIdx)) break;
 
-                    Debug.Log("Found nonsense door to " + currentSeedIDX);
+                    //Debug.Log("Found nonsense door to " + currentSeedIDX);
                     // GENERATE THE DOOR
                     SetTile(doorIDX, seedPos.y, 3);
                     return;
@@ -367,7 +353,7 @@ public class RoomSpawn : MonoBehaviour
                     int newPathIdx = XYToIDX(seedPos.x, doorIDX - 1);
                     if (!exploredTiles.Contains(newPathIdx)) break;
 
-                    Debug.Log("Found nonsense door to " + currentSeedIDX);
+                    //Debug.Log("Found nonsense door to " + currentSeedIDX);
                     // GENERATE THE DOOR
                     SetTile(seedPos.x, doorIDX, 3);
                     return;
