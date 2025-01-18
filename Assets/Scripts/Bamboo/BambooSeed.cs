@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
@@ -19,9 +20,11 @@ public class BambooSeed : MonoBehaviour
 {
     public RoomSpawn roomSpawn;
     public GameObject bambooPrefab1; // Assign your prefab in the Inspector
+    private GameObject CAMERA_ASSEMBLY;
 
     public const int branchingMagScaleFactor = 1;
     public const float branchingCountRangeFactor = 10;
+    private float warningDistanceThreshold = 10;
 
     private List<BambooShoot> spawnedBamboo = new List<BambooShoot>(); // List to store spawned prefabs
     public Dictionary<PosStatePair, int> spawnPossibilities = new Dictionary<PosStatePair, int>();
@@ -37,8 +40,11 @@ public class BambooSeed : MonoBehaviour
     public int tunnelVisionCountRangeMAX = 3;
     public Vector2Int tunnelVisionDirection = new Vector2Int(0, 0); // 0 - x, 1 
 
+    Vector3 loseBambooPos;
+
     void Start()
     {
+        CAMERA_ASSEMBLY = GameObject.Find("CAMERA_ASSEMBLY");
     }
 
     // Update is called once per frame
@@ -101,6 +107,29 @@ public class BambooSeed : MonoBehaviour
         }
     }
 
+    public IEnumerator PanCamera()
+    {
+        while ((CAMERA_ASSEMBLY.transform.position - loseBambooPos).magnitude > 0.5)
+        {
+            Vector3 dir = (loseBambooPos - CAMERA_ASSEMBLY.transform.position).normalized;
+            CAMERA_ASSEMBLY.transform.position += dir * 0.1f;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    void Lose(BambooShoot newBamboo)
+    {
+        loseBambooPos = new Vector3(newBamboo.posState.pos.x, 0, newBamboo.posState.pos.y);
+        Debug.Log("Lose");
+        Time.timeScale = 0;
+        StartCoroutine(PanCamera());
+    }
+
+    void IssueWarning()
+    {
+        Debug.Log("Warning ");
+    }
+
     public BambooShoot SetTile(int x, int y, BambooState state)
     {
         int idx = XYToIDX(x, y);
@@ -128,6 +157,15 @@ public class BambooSeed : MonoBehaviour
         newBamboo.posState = cur_possibility;
         newBamboo.seed = this;
         spawnedBamboo.Add(newBamboo);
+        if ((gridPos - newBamboo.posState.pos).magnitude > warningDistanceThreshold)
+        {
+            IssueWarning();
+        }
+        if (newBamboo.posState.pos.x >= roomSpawn.buildingDimensions.x - 1 || newBamboo.posState.pos.y >= roomSpawn.buildingDimensions.y - 1 ||
+            newBamboo.posState.pos.y <= 0 || newBamboo.posState.pos.x <= 0)
+        {
+            Lose(newBamboo);
+        }
         return newBamboo;
     }
 
@@ -167,7 +205,6 @@ public class BambooSeed : MonoBehaviour
         }
         if (to_delete != null)
         {
-            Debug.Log("IN DELETE");
             Destroy(to_delete.gameObject);
             spawnedBamboo.Remove(to_delete);
             // FIXME Need to remove neigbours from list of possible growth options
@@ -213,9 +250,6 @@ public class BambooSeed : MonoBehaviour
         if (spawnPossibilities.Keys.Count < 20)
         {
             selected = ClosestBambooShoot();
-        } else if (spawnPossibilities.Keys.Count * Random.Range(0.0f, 1.0f) > 100)
-        {
-            selected = FarthestBambooShoot();
         }
 
         while (spawnPossibilities[selected] == 0)
@@ -225,8 +259,6 @@ public class BambooSeed : MonoBehaviour
         }
         return selected;
     }
-
-    
 
     Vector2Int SelectTunnelVisionDirection(PosStatePair selected)
     {
