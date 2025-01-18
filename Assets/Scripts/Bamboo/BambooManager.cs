@@ -1,53 +1,71 @@
 using UnityEngine;
 using System.Collections.Generic; // Required for using List
+using static BambooSeed;
+using System.Collections;
 
 public class BambooManager : MonoBehaviour
 {
     public GameObject bambooSeedPrefab; // Assign your prefab in the Inspector
-    public Vector3 minPosition = new Vector3(-10, 0, -10); // Minimum bounds
-    public Vector3 maxPosition = new Vector3(10, 0, 10);   // Maximum bounds
+    public RoomSpawn roomSpawn;
+
+    public int numSeedsToSpawn = 5;
+    public float bambooGrowSpeed = 1.0f;
 
     private List<BambooSeed> spawnedBambooSeeds = new List<BambooSeed>(); // List to store spawned prefabs
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Trigger Grow method when Return (Enter) is pressed
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            Grow();
-        }
-    }
-
-    void Grow()
+    public void GenerateSeeds()
     {
         // Generate a random position within the bounds
-        Vector3 randomPosition = new Vector3(
-            Random.Range(minPosition.x, maxPosition.x),
-            Random.Range(minPosition.y, maxPosition.y),
-            Random.Range(minPosition.z, maxPosition.z)
-        );
+        List<RoomSeed> randomSeeds = GetRandomElements(roomSpawn.seeds, numSeedsToSpawn);
+        foreach (RoomSeed seed in randomSeeds)
+        {
+            // Instantiate the prefab
+            Vector3 position = new Vector3(seed.pos.x, 0, seed.pos.y);
+            BambooSeed newBambooSeed = Instantiate(bambooSeedPrefab, position, Quaternion.identity).GetComponent<BambooSeed>();
+            newBambooSeed.gridPos = new Vector2Int(seed.pos.x, seed.pos.y);
+            newBambooSeed.transform.position = new Vector3(newBambooSeed.gridPos.x, 0, newBambooSeed.gridPos.y);
+            newBambooSeed.bambooState = new int[roomSpawn.buildingDimensions.x * roomSpawn.buildingDimensions.x];
+            newBambooSeed.spawnPossibilities.Add(new PosStatePair(newBambooSeed.gridPos, BambooState.X));
+            newBambooSeed.spawnPossibilities.Add(new PosStatePair(newBambooSeed.gridPos, BambooState.Z));
+            newBambooSeed.roomSpawn = roomSpawn;
+            newBambooSeed.tunnelVisionChance = Random.Range(0.3f, 1.0f);
+            newBambooSeed.tunnelVisionCountRangeMAX = Random.Range(2, 10);
 
-        // Instantiate the prefab
-        BambooSeed newBambooSeed = Instantiate(bambooSeedPrefab, randomPosition, Quaternion.identity).GetComponent<BambooSeed>();
-
-        // Add the spawned prefab to the list
-        spawnedBambooSeeds.Add(newBambooSeed);
+            // Add the spawned prefab to the list
+            spawnedBambooSeeds.Add(newBambooSeed);
+        }
     }
 
-    BambooSeed SelectSeed() {
-        if (spawnedBambooSeeds.Count > 0)
+    public IEnumerator StartGrowing()
+    {
+        while (true)
         {
-            int randomIndex = Random.Range(0, spawnedBambooSeeds.Count);
-            BambooSeed randomBamboo = spawnedBambooSeeds[randomIndex];
-            return randomBamboo;
+            GrowBamboo();
+            yield return new WaitForSeconds(bambooGrowSpeed);
         }
-        return null;
     }
 
     void GrowBamboo() {
-        BambooSeed seed = SelectSeed();
-        BambooSeed bambooScript = seed.GetComponent<BambooSeed>();
-        bambooScript.Grow();
+        foreach (BambooSeed seed in spawnedBambooSeeds)
+        {
+            seed.Grow();
+        }
+    }
+
+    // Generic method to get random elements from a list
+    List<T> GetRandomElements<T>(List<T> list, int count)
+    {
+        List<T> result = new List<T>();
+        List<T> tempList = new List<T>(list); // Make a copy of the original list
+
+        for (int i = 0; i < count; i++)
+        {
+            if (tempList.Count == 0) break; // Prevent errors if the list is empty
+            int randomIndex = Random.Range(0, tempList.Count); // Get a random index
+            result.Add(tempList[randomIndex]); // Add the random element to the result
+            tempList.RemoveAt(randomIndex); // Remove the selected element to avoid duplicates
+        }
+
+        return result;
     }
 }

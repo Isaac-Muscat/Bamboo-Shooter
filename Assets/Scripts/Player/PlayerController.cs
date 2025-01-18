@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Global References")]
     public RoomSpawn roomManager;
+    public BambooManager bambooManager;
 
     [Header("Player References")]
     public Transform playerBody;
@@ -35,6 +36,8 @@ public class PlayerController : MonoBehaviour
     {
         // Init the level
         roomManager.GenerateRooms();
+        bambooManager.GenerateSeeds();
+        StartCoroutine(bambooManager.StartGrowing());
         position = roomManager.seeds[roomManager.spawnSeed].pos;
         playerBody.position = new Vector3(position.x, 0, position.y);
         cameraAssembly.position = playerBody.position;

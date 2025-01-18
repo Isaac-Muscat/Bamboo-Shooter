@@ -19,15 +19,17 @@ public class BambooSeed : MonoBehaviour
         public PosStatePair(Vector2Int pos, BambooState state) { this.pos = pos; this.state = state; }
     };
 
+    public RoomSpawn roomSpawn;
     public GameObject bambooPrefab1; // Assign your prefab in the Inspector
-    private List<BambooShoot> spawnedBamboo = new List<BambooShoot>(); // List to store spawned prefabs
-    public HashSet<PosStatePair> spawnPossibilities = new HashSet<PosStatePair>();
+
     public const int branchingMagScaleFactor = 1;
     public const float branchingCountRangeFactor = 10;
 
+    private List<BambooShoot> spawnedBamboo = new List<BambooShoot>(); // List to store spawned prefabs
+    public HashSet<PosStatePair> spawnPossibilities = new HashSet<PosStatePair>();
+
     // Grid
     public int[] bambooState;
-    public Vector2Int buildingDimensions = new Vector2Int(20, 20);
     public Vector2Int gridPos = new Vector2Int(0, 0);
 
     public PosStatePair tunnelVisionBamboo;
@@ -36,14 +38,9 @@ public class BambooSeed : MonoBehaviour
     public float tunnelVisionChance = -0.1f;
     public int tunnelVisionCountRangeMAX = 3;
     public Vector2Int tunnelVisionDirection = new Vector2Int(0, 0); // 0 - x, 1 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
-        gridPos = new Vector2Int(buildingDimensions.x / 2, buildingDimensions.y / 2);
-        transform.position = new Vector3(gridPos.x, 0, gridPos.y);
-        bambooState = new int[buildingDimensions.x * buildingDimensions.y];
-        spawnPossibilities.Add(new PosStatePair(gridPos, BambooState.X));
-        spawnPossibilities.Add(new PosStatePair(gridPos, BambooState.Z));
     }
 
     // Update is called once per frame
@@ -58,13 +55,13 @@ public class BambooSeed : MonoBehaviour
     public int XYToIDX(int x, int y)
     {
         if (x < 0 || y < 0) return -1;
-        if (x >= buildingDimensions.x || y >= buildingDimensions.y) return -1;
-        return x + y * buildingDimensions.x;
+        if (x >= roomSpawn.buildingDimensions.x || y >= roomSpawn.buildingDimensions.x) return -1;
+        return x + y * roomSpawn.buildingDimensions.x;
     }
 
     private Vector2Int IDXToXY(int idx)
     {
-        return new Vector2Int(idx % buildingDimensions.x, idx / buildingDimensions.y);
+        return new Vector2Int(idx % roomSpawn.buildingDimensions.x, idx / roomSpawn.buildingDimensions.y);
     }
 
     void AddGrowthPossibilities(PosStatePair bambooShoot)
