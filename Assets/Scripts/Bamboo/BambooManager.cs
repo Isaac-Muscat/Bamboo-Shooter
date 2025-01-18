@@ -9,31 +9,26 @@ public class BambooManager : MonoBehaviour
     public RoomSpawn roomSpawn;
 
     public int numSeedsToSpawn = 5;
-    public float bambooGrowSpeed = 1.0f;
+    public float bambooGrowSpeed = 0.1f;
 
     private List<BambooSeed> spawnedBambooSeeds = new List<BambooSeed>(); // List to store spawned prefabs
 
     public void GenerateSeeds()
     {
-        // Generate a random position within the bounds
-        List<RoomSeed> randomSeeds = GetRandomElements(roomSpawn.seeds, numSeedsToSpawn);
-        foreach (RoomSeed seed in randomSeeds)
-        {
-            // Instantiate the prefab
-            Vector3 position = new Vector3(seed.pos.x, 0, seed.pos.y);
-            BambooSeed newBambooSeed = Instantiate(bambooSeedPrefab, position, Quaternion.identity).GetComponent<BambooSeed>();
-            newBambooSeed.gridPos = new Vector2Int(seed.pos.x, seed.pos.y);
-            newBambooSeed.transform.position = new Vector3(newBambooSeed.gridPos.x, 0, newBambooSeed.gridPos.y);
-            newBambooSeed.bambooState = new int[roomSpawn.buildingDimensions.x * roomSpawn.buildingDimensions.x];
-            newBambooSeed.spawnPossibilities.Add(new PosStatePair(newBambooSeed.gridPos, BambooState.X));
-            newBambooSeed.spawnPossibilities.Add(new PosStatePair(newBambooSeed.gridPos, BambooState.Z));
-            newBambooSeed.roomSpawn = roomSpawn;
-            newBambooSeed.tunnelVisionChance = Random.Range(0.3f, 1.0f);
-            newBambooSeed.tunnelVisionCountRangeMAX = Random.Range(2, 10);
+        // Instantiate the prefab
+        Vector3 position = new Vector3(roomSpawn.buildingDimensions.x / 2, 0, roomSpawn.buildingDimensions.y / 2);
+        BambooSeed newBambooSeed = Instantiate(bambooSeedPrefab, position, Quaternion.identity).GetComponent<BambooSeed>();
+        newBambooSeed.gridPos = new Vector2Int(roomSpawn.buildingDimensions.x / 2, roomSpawn.buildingDimensions.y / 2);
+        newBambooSeed.transform.position = new Vector3(newBambooSeed.gridPos.x, 0, newBambooSeed.gridPos.y);
+        newBambooSeed.bambooState = new int[roomSpawn.buildingDimensions.x * roomSpawn.buildingDimensions.x];
+        newBambooSeed.spawnPossibilities.Add(new PosStatePair(newBambooSeed.gridPos, BambooState.X));
+        newBambooSeed.spawnPossibilities.Add(new PosStatePair(newBambooSeed.gridPos, BambooState.Z));
+        newBambooSeed.roomSpawn = roomSpawn;
+        newBambooSeed.tunnelVisionChance = Random.Range(0.3f, 1.0f);
+        newBambooSeed.tunnelVisionCountRangeMAX = Random.Range(2, 10);
 
-            // Add the spawned prefab to the list
-            spawnedBambooSeeds.Add(newBambooSeed);
-        }
+        // Add the spawned prefab to the list
+        spawnedBambooSeeds.Add(newBambooSeed);
     }
 
     public IEnumerator StartGrowing()
