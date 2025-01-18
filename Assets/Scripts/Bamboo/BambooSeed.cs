@@ -175,10 +175,49 @@ public class BambooSeed : MonoBehaviour
         }
     }
 
+    PosStatePair FarthestBambooShoot()
+    {
+        float max_dist2 = -1;
+        PosStatePair max_posState = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
+        foreach (PosStatePair posStatePair in spawnPossibilities.Keys)
+        {
+            float dist2 = (gridPos - posStatePair.pos).magnitude;
+            if (dist2 > max_dist2)
+            {
+                max_dist2 = dist2;
+                max_posState = posStatePair;
+            }
+        }
+        return max_posState;
+    }
+
+    PosStatePair ClosestBambooShoot()
+    {
+        float min_dist2 = roomSpawn.buildingDimensions.magnitude;
+        PosStatePair min_posState = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
+        foreach (PosStatePair posStatePair in spawnPossibilities.Keys)
+        {
+            float dist2 = (gridPos - posStatePair.pos).magnitude;
+            if (dist2 < min_dist2)
+            {
+                min_dist2 = dist2;
+                min_posState = posStatePair;
+            }
+        }
+        return min_posState;
+    }
 
     PosStatePair SelectTunnelVisionBamboo()
     {
         PosStatePair selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
+        if (spawnPossibilities.Keys.Count < 20)
+        {
+            selected = ClosestBambooShoot();
+        } else if (spawnPossibilities.Keys.Count * Random.Range(0.0f, 1.0f) > 100)
+        {
+            selected = FarthestBambooShoot();
+        }
+
         while (spawnPossibilities[selected] == 0)
         {
             spawnPossibilities.Remove(selected);

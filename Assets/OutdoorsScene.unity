@@ -930,7 +930,7 @@ MonoBehaviour:
   bambooSeedPrefab: {fileID: 3587265966825318793, guid: dbd3cbc3067425142a39cdd72dc19ee6, type: 3}
   roomSpawn: {fileID: 1449892118}
   numSeedsToSpawn: 5
-  bambooGrowSpeed: 0.35
+  bambooGrowSpeed: 0.1
 --- !u!4 &1137117886
 Transform:
   m_ObjectHideFlags: 0
