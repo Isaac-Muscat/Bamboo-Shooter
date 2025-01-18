@@ -1,0 +1,4 @@
+repository "Bamboo Shooter@poweroverloaddevs@cloud"
+  path "/"
+    br "/main"
+    co "/main"
