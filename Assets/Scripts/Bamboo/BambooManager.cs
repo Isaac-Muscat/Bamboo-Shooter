@@ -7,7 +7,7 @@ public class BambooManager : MonoBehaviour
     public Vector3 minPosition = new Vector3(-10, 0, -10); // Minimum bounds
     public Vector3 maxPosition = new Vector3(10, 0, 10);   // Maximum bounds
 
-    private List<GameObject> spawnedBambooSeeds = new List<GameObject>(); // List to store spawned prefabs
+    private List<BambooSeed> spawnedBambooSeeds = new List<BambooSeed>(); // List to store spawned prefabs
 
     // Update is called once per frame
     void Update()
@@ -16,8 +16,6 @@ public class BambooManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             Grow();
-        } else if (Input.GetKeyDown(KeyCode.Space)) {
-            GrowBamboo();
         }
     }
 
@@ -31,25 +29,25 @@ public class BambooManager : MonoBehaviour
         );
 
         // Instantiate the prefab
-        GameObject newBambooSeed = Instantiate(bambooSeedPrefab, randomPosition, Quaternion.identity);
+        BambooSeed newBambooSeed = Instantiate(bambooSeedPrefab, randomPosition, Quaternion.identity).GetComponent<BambooSeed>();
 
         // Add the spawned prefab to the list
         spawnedBambooSeeds.Add(newBambooSeed);
     }
 
-    GameObject SelectSeed() {
+    BambooSeed SelectSeed() {
         if (spawnedBambooSeeds.Count > 0)
         {
             int randomIndex = Random.Range(0, spawnedBambooSeeds.Count);
-            GameObject randomBamboo = spawnedBambooSeeds[randomIndex];
+            BambooSeed randomBamboo = spawnedBambooSeeds[randomIndex];
             return randomBamboo;
         }
-
         return null;
     }
 
     void GrowBamboo() {
-        GameObject seed = SelectSeed();
-        //seed.Grow();
+        BambooSeed seed = SelectSeed();
+        BambooSeed bambooScript = seed.GetComponent<BambooSeed>();
+        bambooScript.Grow();
     }
 }

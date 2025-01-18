@@ -121,3 +121,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e26d2b76d37cbf84ebbe63ab05e022c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bambooPrefab1: {fileID: 5183059196454297556, guid: 2e8620af1e134964ebba244deacecc4f, type: 3}
+  bambooState: 
+  buildingDimensions: {x: 20, y: 20}
+  gridPos: {x: 0, y: 0}
+  tunnelVisionBamboo: {fileID: 0}
+  tunnelVisionMode: 0
+  tunnelVisionCount: 0
+  tunnelVisionChance: 0
+  tunnelVisionCountRangeMAX: 4
+  tunnelVisionDirection: 0
