@@ -42,7 +42,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3587265966825318793}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &3942624582909656636
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 73c176f402d2c2f4d929aa5da7585d17, type: 2}
+  - {fileID: 2100000, guid: 71e7363d73088f2419cb8be4f646a208, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -121,3 +121,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e26d2b76d37cbf84ebbe63ab05e022c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bambooPrefab1: {fileID: 5183059196454297556, guid: 2e8620af1e134964ebba244deacecc4f, type: 3}
+  bambooState: 
+  buildingDimensions: {x: 20, y: 20}
+  gridPos: {x: 0, y: 0}
+  tunnelVisionMode: 0
+  tunnelVisionCount: 0
+  tunnelVisionChance: 0
+  tunnelVisionCountRangeMAX: 4
+  tunnelVisionDirection: {x: 0, y: 0}
