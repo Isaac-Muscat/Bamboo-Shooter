@@ -14,7 +14,12 @@ public class PlayerController : MonoBehaviour
     private Camera mainCam;
     public Transform crosshair;
     public MeshFilter playerMesh;
-    
+
+    [Header("Attacking")]
+    public int weapon = 0;
+    public GameObject[] weaponAttackPrefabs;
+    public float[] weaponDelays;
+    private float currentWeaponDelay = 0;
 
     [Header("Physics")]
     public float playerRadius = 0.4f;
@@ -103,6 +108,15 @@ public class PlayerController : MonoBehaviour
         }
         else lastLookDir = lastPointInput;
         playerMesh.transform.LookAt(playerMesh.transform.position - new Vector3(lastLookDir.x, 0, lastLookDir.y), Vector3.up);
+        
+        // COMPUTE SHOOTING
+        currentWeaponDelay -= Time.fixedDeltaTime;
+        if (firing && currentWeaponDelay < 0)
+        {
+            currentWeaponDelay = weaponDelays[weapon];
+            Projectile fired = Instantiate(weaponAttackPrefabs[weapon], transform).GetComponent<Projectile>();
+            fired.Fire(position, lastLookDir);
+        }
     }
 
     private void CollisionCheck()
