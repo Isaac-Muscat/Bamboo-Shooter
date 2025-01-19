@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,6 +47,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 lastMouseInput = Vector2.zero;
     private bool firing = false;
 
+    [Header("Audio")] 
+    public AudioSource source1;
+    public AudioSource source2;
+
     void Start()
     {
         // Init the level
@@ -57,6 +62,10 @@ public class PlayerController : MonoBehaviour
         cameraAssembly.position = playerBody.position;
 
         //mainCam = Camera.main;
+        source1.Play();
+        source2.Play();
+        source1.volume = 1;
+        source2.volume = 0;
     }
     
     // PHYSICS
@@ -101,7 +110,8 @@ public class PlayerController : MonoBehaviour
         }
         
         playerBody.position = new Vector3(position.x, 0, position.y);
-        cameraAssembly.position = playerBody.position;
+        // LERP
+        cameraAssembly.position = Vector3.Lerp(cameraAssembly.position, playerBody.position, Time.fixedDeltaTime*4);
         
         // UPDATE THE LOOK DIR / CORSSHAIR
         Vector3 crosshairPos = mainCam.ViewportToWorldPoint(new Vector3(lastPointInput.x * 0.2f + 0.5f, lastPointInput.y * 0.2f + 0.5f, 4));
@@ -209,7 +219,11 @@ public class PlayerController : MonoBehaviour
         } else if (loot != null)
         {
             if (loot.lootID == -1) numCoins++;
-            if (loot.lootID == -2) hasKeycard = true;
+            if (loot.lootID == -2 && !hasKeycard)
+            {
+                hasKeycard = true;
+                GetKey();
+            }
             Destroy(collider);
         }
     }
@@ -249,5 +263,30 @@ public class PlayerController : MonoBehaviour
         {
             firing = false;
         }
+    }
+
+    public void GetKey()
+    {
+        Time.timeScale = 0;
+        StartCoroutine(Pan());
+        //TODO: Music
+    }
+
+    IEnumerator Pan()
+    {
+        Vector3 delta = (new Vector3(20, 0, 20) - cameraAssembly.position) / 100.0f;
+        Vector3 initialPos = cameraAssembly.position;
+        for (int i = 0; i < 100; i++)
+        {
+            cameraAssembly.transform.position = initialPos + delta*i;
+            float fac = i / 100.0f;
+            source1.volume = 1 - fac;
+            source2.volume = fac;
+            yield return new WaitForEndOfFrame();
+        }
+
+        source1.volume = 0;
+        source2.volume = 1;
+        StartCoroutine(roomManager.LowerWalls());
     }
 }

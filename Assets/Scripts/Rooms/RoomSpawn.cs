@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics.Geometry;
@@ -37,6 +38,8 @@ public class RoomSpawn : MonoBehaviour
     public int spawnSeed = 0;
     public List<int> unexploredSeeds;
     public List<int> exploredTiles;
+    public List<GameObject> centerWalls;
+    public List<int> centerWallTiles;
 
     [Header("Bamboo Settings")]
     public int frameInterval = 10;
@@ -96,14 +99,19 @@ public class RoomSpawn : MonoBehaviour
         // Set the walls around the center room
         for (int x = 0; x < centerRoomDimensions.x + 2; x++)
         {
-            SetTile_ROOM(x - centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, centerRoomDimensions.y/2 + buildingDimensions.y/2, 2);
-            SetTile_ROOM(x - centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, -centerRoomDimensions.y/2 + buildingDimensions.y/2 - 1, 2);
+            SetTile_ROOM(x - centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, centerRoomDimensions.y/2 + buildingDimensions.y/2, 6);
+            SetTile_ROOM(x - centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, -centerRoomDimensions.y/2 + buildingDimensions.y/2 - 1, 6);
+            centerWallTiles.Add(XYToIDX_ROOM(x - centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, centerRoomDimensions.y/2 + buildingDimensions.y/2));
+            centerWallTiles.Add(XYToIDX_ROOM(x - centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, -centerRoomDimensions.y/2 + buildingDimensions.y/2 - 1));
+
         }
 
         for (int y = 0; y < centerRoomDimensions.y; y++)
         {
-            SetTile_ROOM(centerRoomDimensions.x/2 + buildingDimensions.x/2, y - centerRoomDimensions.y/2 + buildingDimensions.y/2, 2);
-            SetTile_ROOM(-centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, y - centerRoomDimensions.y/2 + buildingDimensions.y/2, 2);
+            SetTile_ROOM(centerRoomDimensions.x/2 + buildingDimensions.x/2, y - centerRoomDimensions.y/2 + buildingDimensions.y/2, 6);
+            SetTile_ROOM(-centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, y - centerRoomDimensions.y/2 + buildingDimensions.y/2, 6);
+            centerWallTiles.Add(XYToIDX_ROOM(centerRoomDimensions.x/2 + buildingDimensions.x/2, y - centerRoomDimensions.y/2 + buildingDimensions.y/2));
+            centerWallTiles.Add(XYToIDX_ROOM(-centerRoomDimensions.x/2 + buildingDimensions.x/2 - 1, y - centerRoomDimensions.y/2 + buildingDimensions.y/2));
         }
         
         // Set the walls around the building
@@ -234,6 +242,8 @@ public class RoomSpawn : MonoBehaviour
             GameObject tile = Instantiate(tiles[floorState[i]], transform);
             Vector2Int pos = IDXToXY_ROOM(i);
             tile.transform.position = new Vector3(pos.x, 0, pos.y);
+            
+            if (floorState[i] == 6) centerWalls.Add(tile);
         }
     }
 
@@ -582,5 +592,20 @@ public class RoomSpawn : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public IEnumerator LowerWalls()
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            for (int z = 0; z < centerWalls.Count; z++)
+            {
+                floorState[centerWallTiles[z]] = 1;
+                centerWalls[z].transform.position -= Vector3.up * 0.02f;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        
+        Time.timeScale = 1;
     }
 }
