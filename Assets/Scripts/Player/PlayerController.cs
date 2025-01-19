@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     
     [Header("Input")]
     private Vector2 lastInput = Vector2.zero;
+    private Vector2 lastLookDir = Vector2.up;
 
     void Start()
     {
@@ -57,17 +58,25 @@ public class PlayerController : MonoBehaviour
             position += qStep;
             CollisionCheck();
         }
+        
+        // Calculate Look direction
+        if (lastInput != Vector2.zero) lastLookDir = lastInput.normalized;
+        playerMesh.transform.LookAt(playerMesh.transform.position - new Vector3(lastLookDir.x, 0, lastLookDir.y), Vector3.up);
 
         // Animate the player
-        if (lastInput != Vector2.zero)
+        if (velocity.magnitude > 0.1)
             distanceSinceLastStep += Vector2.Distance(prevPos, position);
-        else
+        else if (stepState)
+        {
             stepState = false;
-            
+            playerMesh.mesh = playerAnimateMeshes[0];
+        }
+
         if (distanceSinceLastStep > distanceBetweenSteps)
         {
             distanceSinceLastStep = 0;
             playerMesh.mesh = stepState ? playerAnimateMeshes[1] : playerAnimateMeshes[0];
+            playerMesh.transform.localPosition = stepState ? new Vector3(0, 0.1f, 0.1f) : new Vector3(0, 0, 0);
             playerMesh.transform.localScale = stepSide ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
             
             if (stepState) stepSide = !stepSide;
@@ -140,6 +149,17 @@ public class PlayerController : MonoBehaviour
         }
     }
     
+    // UNITY EVENT FUNCS
+
+    public void DebrisCollision(GameObject collider, Vector2 collisionPoint)
+    {
+        Debris debris = collider.GetComponent<Debris>();
+        if (debris != null)
+        {
+            debris.Flip(collisionPoint, collisionPoint - position);
+        }
+    }
+    
     // INPUT HANDLING
 
     public void Move(InputAction.CallbackContext context)
@@ -147,6 +167,8 @@ public class PlayerController : MonoBehaviour
         if (context.performed)
         {
             lastInput = context.ReadValue<Vector2>();
+            if (lastInput.magnitude < 0.1)
+                lastInput = Vector2.zero;
         } else if (context.canceled)
         {
             lastInput = Vector2.zero;
