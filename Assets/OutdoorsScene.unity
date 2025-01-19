@@ -1161,6 +1161,8 @@ MonoBehaviour:
   - {fileID: 1120186903122669304, guid: 017d0a2073d25f843a4885d10fbe6b18, type: 3}
   - {fileID: 5606328045140233403, guid: f98ad181e360e8e43b11e9de6e51b86f, type: 3}
   - {fileID: 7627934333240285569, guid: fd5b2dfe7ae71f24784d33cf312da7e3, type: 3}
+  numWeapons: 3
+  numKeycards: 2
   floorState: 
   seeds: []
   spawnSeed: 0
@@ -2068,6 +2070,10 @@ MonoBehaviour:
   - {fileID: 4210314850670997667, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
   weaponDelays:
   - 0.05
+  lootObjects: []
+  hasKeycard: 0
+  keyCard: {fileID: 0}
+  coin: {fileID: 2823253437978234786, guid: 9bbb1c925856f3143a86986ecf8dfa57, type: 3}
   playerRadius: 0.4
   drag: 20
   accelMultiplier: 200

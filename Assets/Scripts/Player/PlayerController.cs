@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour
     public GameObject[] weaponAttackPrefabs;
     public float[] weaponDelays;
     private float currentWeaponDelay = 0;
+    public GameObject[] lootObjects;
+    public bool hasKeycard = false;
+    public GameObject keyCard;
+    public GameObject coin;
 
     [Header("Physics")]
     public float playerRadius = 0.4f;
@@ -45,7 +49,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         // Init the level
-        roomManager.GenerateRooms();
+        roomManager.GenerateRooms(this);
         bambooManager.GenerateSeeds();
         StartCoroutine(bambooManager.StartGrowing());
         position = roomManager.seeds[roomManager.spawnSeed].pos;

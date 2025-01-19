@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Mathematics.Geometry;
 using UnityEngine;
 
@@ -20,6 +21,9 @@ public class RoomSpawn : MonoBehaviour
     
     public int[] numDebris;
     public GameObject[] debrisPrefabs;
+
+    public int numWeapons = 3;
+    public int numKeycards = 2;
     
 
     public int[] floorState;
@@ -59,7 +63,7 @@ public class RoomSpawn : MonoBehaviour
     }
     
     // Spawn the rooms
-    public void GenerateRooms()
+    public void GenerateRooms(PlayerController pc)
     {
         floorState = new int[buildingDimensions.x * buildingDimensions.y];
 
@@ -157,6 +161,7 @@ public class RoomSpawn : MonoBehaviour
         // Spawn debris
 
         List<int> invalidSpots = new List<int>();
+        List<Debris> spawnedDebris = new List<Debris>();
         for (int d = 0; d < debrisPrefabs.Length; d++)
         {
             
@@ -169,9 +174,41 @@ public class RoomSpawn : MonoBehaviour
                 if (GetTile(spawnX, spawnY) == 1 && !invalidSpots.Contains(debrisIdx))
                 {
                     // SPAWN THE DEBRIS
-                    Instantiate(debrisPrefabs[d], new Vector3(spawnX, 0.5f, spawnY), Quaternion.identity);
+                    Debris spD = Instantiate(debrisPrefabs[d], new Vector3(spawnX, 0.5f, spawnY), Quaternion.identity)
+                        .GetComponent<Debris>();
+                    spawnedDebris.Add(spD);
+                    spD.player = pc;
+                    spD.loot = 0;
                     invalidSpots.Add(debrisIdx);
                 }
+            }
+        }
+
+        // Give debris loot
+        List<int> invalidDebris = new List<int>();
+        for (int i = 0; i < numWeapons; i++)
+        {
+            for (int z = 0; z < 100; z++)
+            {
+                int chosenDebris = Random.Range(0, spawnedDebris.Count-1);
+                if (invalidDebris.Contains(chosenDebris)) continue;
+                
+                invalidDebris.Add(chosenDebris);
+                spawnedDebris[chosenDebris].loot = 1;
+                break;
+            }
+        }
+        
+        for (int i = 0; i < numKeycards; i++)
+        {
+            for (int z = 0; z < 100; z++)
+            {
+                int chosenDebris = Random.Range(0, spawnedDebris.Count-1);
+                if (invalidDebris.Contains(chosenDebris)) continue;
+                
+                invalidDebris.Add(chosenDebris);
+                spawnedDebris[chosenDebris].loot = 2;
+                break;
             }
         }
 
