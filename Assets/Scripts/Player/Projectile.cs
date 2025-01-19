@@ -14,6 +14,7 @@ public class Projectile : MonoBehaviour
     [Header("State")]
     public Vector2 velocity;
     public bool fired = false;
+    public RoomSpawn roomMan;
 
     public void Fire(Vector2 pos, Vector2 dir)
     {
@@ -40,7 +41,11 @@ public class Projectile : MonoBehaviour
         livingFrames--;
         //velocity *= (drag * Time.fixedDeltaTime) + 1;
         //transform.position += new Vector3(velocity.x, 0, velocity.y) * Time.fixedDeltaTime;
-        
+        if (roomMan.CollideBamboo(new Vector2(transform.position.x, transform.position.z)))
+        {
+            Instantiate(deathPart, transform.position - new Vector3(velocity.x, 0, velocity.y)*Time.fixedDeltaTime, Quaternion.identity);
+            Destroy(gameObject);
+        }
         // TODO: Raycast
     }
 

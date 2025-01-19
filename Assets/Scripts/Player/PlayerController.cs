@@ -6,12 +6,11 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Global References")]
     public RoomSpawn roomManager;
-    public BambooManager bambooManager;
 
     [Header("Player References")]
     public Transform playerBody;
     public Transform cameraAssembly;
-    private Camera mainCam;
+    public Camera mainCam;
     public Transform crosshair;
     public MeshFilter playerMesh;
 
@@ -22,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private float currentWeaponDelay = 0;
     public GameObject[] lootObjects;
     public bool hasKeycard = false;
+    public int numCoins;
     public GameObject keyCard;
     public GameObject coin;
 
@@ -50,18 +50,19 @@ public class PlayerController : MonoBehaviour
     {
         // Init the level
         roomManager.GenerateRooms(this);
-        bambooManager.GenerateSeeds();
-        StartCoroutine(bambooManager.StartGrowing());
+        roomManager.GenerateBamboo();
+        //return;
         position = roomManager.seeds[roomManager.spawnSeed].pos;
         playerBody.position = new Vector3(position.x, 0, position.y);
         cameraAssembly.position = playerBody.position;
 
-        mainCam = Camera.main;
+        //mainCam = Camera.main;
     }
     
     // PHYSICS
     private void FixedUpdate()
     {
+        //return;
         // update accel based on input
         Vector2 accelVec = lastInput * (accelMultiplier * Time.fixedDeltaTime);
         Vector2 dragVec = -velocity * (drag * Time.fixedDeltaTime);
@@ -119,12 +120,19 @@ public class PlayerController : MonoBehaviour
         {
             currentWeaponDelay = weaponDelays[weapon];
             Projectile fired = Instantiate(weaponAttackPrefabs[weapon], transform).GetComponent<Projectile>();
+            fired.roomMan = roomManager;
             fired.Fire(position + lastLookDir*0.5f, lastLookDir);
         }
     }
 
     private void CollisionCheck()
     {
+        // Check for walking on vines
+        if (roomManager.CollideBamboo(position))
+        {
+            Debug.Log("HIT!");
+        }
+        
         Vector2Int roundedPosTR = new Vector2Int(
             Mathf.RoundToInt(position.x + playerRadius), 
             Mathf.RoundToInt(position.y + playerRadius));
@@ -134,22 +142,22 @@ public class PlayerController : MonoBehaviour
 
         // GENERATE A COLLISION CODE
         int collisionCode = 0;
-        if (roomManager.GetTile(roundedPosTR.x, roundedPosTR.y) % 2 == 0)
+        if (roomManager.GetTile_ROOM(roundedPosTR.x, roundedPosTR.y) % 2 == 0)
         {
             // COLLISION ON TR
             collisionCode |= 0b0001;
         }
-        if (roomManager.GetTile(roundedPosBL.x, roundedPosTR.y) % 2 == 0)
+        if (roomManager.GetTile_ROOM(roundedPosBL.x, roundedPosTR.y) % 2 == 0)
         {
             // COLLISION ON TL
             collisionCode |= 0b0010;
         }
-        if (roomManager.GetTile(roundedPosTR.x, roundedPosBL.y) % 2 == 0)
+        if (roomManager.GetTile_ROOM(roundedPosTR.x, roundedPosBL.y) % 2 == 0)
         {
             // COLLISION ON BR
             collisionCode |= 0b0100;
         }
-        if (roomManager.GetTile(roundedPosBL.x, roundedPosBL.y) % 2 == 0)
+        if (roomManager.GetTile_ROOM(roundedPosBL.x, roundedPosBL.y) % 2 == 0)
         {
             // COLLISION ON BL
             collisionCode |= 0b1000;
@@ -189,6 +197,7 @@ public class PlayerController : MonoBehaviour
     public void DebrisCollision(GameObject collider, Vector2 collisionPoint)
     {
         Debris debris = collider.GetComponent<Debris>();
+        Loot loot = collider.GetComponent<Loot>();
         if (debris != null)
         {
             Vector2 collisionDir = collisionPoint - position;
@@ -197,6 +206,11 @@ public class PlayerController : MonoBehaviour
             float dotFac = Vector2.Dot(velocity, collisionDir);
             velocity -= collisionDir * dotFac * 5;
             position -= collisionDir * dotFac * Time.fixedDeltaTime;
+        } else if (loot != null)
+        {
+            if (loot.lootID == -1) numCoins++;
+            if (loot.lootID == -2) hasKeycard = true;
+            Destroy(collider);
         }
     }
     

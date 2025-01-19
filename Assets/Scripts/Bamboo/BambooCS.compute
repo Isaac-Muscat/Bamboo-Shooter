@@ -1,0 +1,110 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+Texture2D<float1>        _Sim_IN;
+RWTexture2D<float1>      _Sim_OUT;
+RWTexture2D<float4>     _Vis_OUT;
+
+float _rngOffset;
+int _animFrame;
+
+float random (float2 uv)
+{
+    return frac(sin(dot(uv,float2(12.9898,78.233)))*43758.5453123);
+}
+
+// PERLIN NOISE
+float2 unity_gradientNoise_dir(float2 p)
+{
+    p = p % 289;
+    float x = (34 * p.x + 1) * p.x % 289 + p.y;
+    x = (34 * x + 1) * x % 289;
+    x = frac(x / 41) * 2 - 1;
+    return normalize(float2(x - floor(x + 0.5), abs(x) - 0.5));
+}
+
+float unity_gradientNoise(float2 p)
+{
+    float2 ip = floor(p);
+    float2 fp = frac(p);
+    float d00 = dot(unity_gradientNoise_dir(ip), fp);
+    float d01 = dot(unity_gradientNoise_dir(ip + float2(0, 1)), fp - float2(0, 1));
+    float d10 = dot(unity_gradientNoise_dir(ip + float2(1, 0)), fp - float2(1, 0));
+    float d11 = dot(unity_gradientNoise_dir(ip + float2(1, 1)), fp - float2(1, 1));
+    fp = fp * fp * fp * (fp * (fp * 6 - 15) + 10);
+    return lerp(lerp(d00, d01, fp.y), lerp(d10, d11, fp.y), fp.x);
+}
+
+float Unity_GradientNoise_float(float2 UV, float Scale)
+{
+    return unity_gradientNoise(UV * Scale) + 0.5;
+}
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // Get visuals first
+    float opac = 0;
+    if (_Sim_IN[id.xy] > 0.5f) opac = 1;
+
+    float col = ((_animFrame + _Sim_IN[id.xy]) % 20) / 40.0f;
+    _Vis_OUT[id.xy] = float4(0.3f, (1.0f-col), 0, opac);
+    
+    // Set center to 1
+    // TODO: Move this to CPU
+    if (id.x == 200 && id.y == 200)
+    {
+        _Sim_OUT[id.xy] = 5000;
+        return;
+    }
+
+    float currentVal = _Sim_IN[id.xy];
+    
+    // Spend recovery frames
+    //if (currentVal < -0.5f)
+    //{
+    //    _Sim_OUT[id.xy] = currentVal + 1;
+    //    return;
+    //}
+
+    // Check neighbors for growth
+    int numNeighbors = 0;
+    bool cardinalNeighbor = false;
+    int maxNeighbor = currentVal;
+    // Collect neighbors
+    
+    if (_Sim_IN[int2(id.x+1, id.y)] > 0)   { numNeighbors++; maxNeighbor = max(maxNeighbor, _Sim_IN[int2(id.x+1, id.y)]); cardinalNeighbor = true;}
+    if (_Sim_IN[int2(id.x-1, id.y)] > 0)   { numNeighbors++; maxNeighbor = max(maxNeighbor, _Sim_IN[int2(id.x-1, id.y)]); cardinalNeighbor = true;}
+    if (_Sim_IN[int2(id.x, id.y+1)] > 0)   { numNeighbors++; maxNeighbor = max(maxNeighbor, _Sim_IN[int2(id.x, id.y+1)]); cardinalNeighbor = true;}
+    if (_Sim_IN[int2(id.x, id.y-1)] > 0)   { numNeighbors++; maxNeighbor = max(maxNeighbor, _Sim_IN[int2(id.x, id.y-1)]); cardinalNeighbor = true;}
+    if (_Sim_IN[int2(id.x+1, id.y+1)] > 0) { numNeighbors++; maxNeighbor = max(maxNeighbor, _Sim_IN[int2(id.x+1, id.y+1)]); }
+    if (_Sim_IN[int2(id.x+1, id.y-1)] > 0) { numNeighbors++; maxNeighbor = max(maxNeighbor, _Sim_IN[int2(id.x+1, id.y-1)]); }
+    if (_Sim_IN[int2(id.x-1, id.y+1)] > 0) { numNeighbors++; maxNeighbor = max(maxNeighbor, _Sim_IN[int2(id.x-1, id.y+1)]); }
+    if (_Sim_IN[int2(id.x-1, id.y-1)] > 0) { numNeighbors++; maxNeighbor = max(maxNeighbor, _Sim_IN[int2(id.x-1, id.y-1)]); }
+
+    if (currentVal > 0.5f && maxNeighbor <= currentVal+0.5f)
+    {
+        // killed
+        _Sim_OUT[id.xy] = 0;
+        return;
+    } else
+    {
+        _Sim_OUT[id.xy] = _Sim_IN[id.xy];
+    }
+    
+    if (numNeighbors >= 2) return;
+    if (numNeighbors <= 0) return;
+
+    // Try to grow
+
+    if (_animFrame % 6 != 0) return;
+    
+    float chance = Unity_GradientNoise_float(id.xy + float2(_animFrame/5.0f, 0), 0.1);
+    chance += random(id.xy + float2(_rngOffset, 0));
+
+    if (!cardinalNeighbor && chance > 0.3) return;
+    if (chance > 0.7) return;
+    //if (numNeighbors == 2 && chance > 0.8f) return;
+
+    _Sim_OUT[id.xy] = maxNeighbor - 1;
+}

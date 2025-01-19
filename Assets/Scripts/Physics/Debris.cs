@@ -37,7 +37,7 @@ public class Debris : MonoBehaviour
                 else
                 {
                     Loot spLoot = Instantiate(player.lootObjects[player.weapon + 1], transform.position, Quaternion.identity).GetComponent<Loot>();
-                    spLoot.Initialize(rb.linearVelocity);
+                    spLoot.Initialize(rb.linearVelocity, player);
                 }
             } else if (loot == 2)
             {
@@ -47,7 +47,7 @@ public class Debris : MonoBehaviour
                 else
                 {
                     Loot spLoot = Instantiate(player.keyCard, transform.position, Quaternion.identity).GetComponent<Loot>();
-                    spLoot.Initialize(rb.linearVelocity);
+                    spLoot.Initialize(rb.linearVelocity, player);
                 }
             }
             else
@@ -71,7 +71,7 @@ public class Debris : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             Loot spLoot = Instantiate(player.coin, transform.position, Quaternion.identity).GetComponent<Loot>();
-            spLoot.Initialize(rb.linearVelocity);
+            spLoot.Initialize(rb.linearVelocity, player);
             yield return new WaitForFixedUpdate();
         }
     }
