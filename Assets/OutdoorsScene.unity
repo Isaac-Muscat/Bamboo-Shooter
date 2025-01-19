@@ -1155,10 +1155,12 @@ MonoBehaviour:
   numRooms: 12
   minRoomSize: {x: 5, y: 5}
   maxRoomSize: {x: 15, y: 15}
-  numDebris: 1400000032000000
+  numDebris: 0f0000001e0000001900000019000000
   debrisPrefabs:
   - {fileID: 8088738857949237131, guid: 7a9536824e7e07f4185439081d69aaf0, type: 3}
   - {fileID: 1120186903122669304, guid: 017d0a2073d25f843a4885d10fbe6b18, type: 3}
+  - {fileID: 5606328045140233403, guid: f98ad181e360e8e43b11e9de6e51b86f, type: 3}
+  - {fileID: 7627934333240285569, guid: fd5b2dfe7ae71f24784d33cf312da7e3, type: 3}
   floorState: 
   seeds: []
   spawnSeed: 0
