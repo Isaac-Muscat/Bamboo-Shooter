@@ -8,7 +8,7 @@ public class MenuPlay : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        PlayerPrefs.SetInt("GrowthFactor", 6);
+        PlayerPrefs.SetInt("GrowthFactor", 4);
     }
 
     // Update is called once per frame

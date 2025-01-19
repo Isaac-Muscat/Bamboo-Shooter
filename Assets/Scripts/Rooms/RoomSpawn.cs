@@ -239,6 +239,10 @@ public class RoomSpawn : MonoBehaviour
             }
         }
 
+        if (unexploredSeeds.Count > 0)
+        {
+            SceneManager.LoadScene("MainScene");
+        }
         // Draw the room
         for (int i = 0; i < floorState.Length; i++)
         {
@@ -562,7 +566,7 @@ public class RoomSpawn : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         Time.timeScale = 1.0f;
-        PlayerPrefs.SetInt("GrowthFactor", 6);
+        PlayerPrefs.SetInt("GrowthFactor", 4);
         SceneManager.LoadScene("MenuScene");
     }
 
