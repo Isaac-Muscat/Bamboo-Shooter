@@ -563,9 +563,9 @@ public class RoomSpawn : MonoBehaviour
         }
     }
 
-    void Lose(Vector2Int losPos)
+    void Lose(int x, int y)
     {
-        loseBambooPos = new Vector3(losPos.x, 0, losPos.y);
+        loseBambooPos = new Vector3(x, 0, y);
         Debug.Log("Lose");
         Time.timeScale = 0;
         StartCoroutine(PanCamera());
@@ -607,20 +607,19 @@ public class RoomSpawn : MonoBehaviour
         //RenderTexture.active = Camera.main.targetTexture; 
 
         // Lose Condition
-        Vector2Int bambooBounds = GetPixelSpace(bambooSimTex_Out.width, bambooSimTex_Out.height);
-        for (int x = 0; x < bambooSimCPU.width/bambooScale; x++)
+        for (int x = 0; x < buildingDimensions.x; x++)
         {
             Vector2Int coord = GetPixelSpace(x, 0);
-            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(coord);
-            coord = GetPixelSpace(x, bambooSimTex_Out.height);
-            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(coord);
+            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(x, 0);
+            coord = GetPixelSpace(x, buildingDimensions.y - 1);
+            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(x, buildingDimensions.y - 1);
         }
-        for (int y = 0; y < bambooSimCPU.height/bambooScale; y++)
+        for (int y = 0; y < buildingDimensions.y; y++)
         {
             Vector2Int coord = GetPixelSpace(0, y);
-            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(coord);
-            coord = GetPixelSpace(bambooSimTex_Out.width, y);
-            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(coord);
+            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(0, y);
+            coord = GetPixelSpace(buildingDimensions.x - 1, y);
+            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(buildingDimensions.x - 1, y);
         }
         Debug.Log(bambooSimCPU.width + " " + bambooSimCPU.height);
     }
