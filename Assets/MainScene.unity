@@ -892,6 +892,7 @@ MonoBehaviour:
   numKeycards: 100
   floorState: 
   seeds: []
+  CAMERA_ASSEMBLY: {fileID: 428886756}
   spawnSeed: 0
   unexploredSeeds: 
   exploredTiles: 
