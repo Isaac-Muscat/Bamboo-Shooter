@@ -188,7 +188,7 @@ public class PlayerController : MonoBehaviour
         if (debris != null)
         {
             Vector2 collisionDir = collisionPoint - position;
-            debris.Flip(collisionPoint, collisionDir + velocity);
+            debris.Flip(collisionPoint, collisionDir + velocity, 25);
             // move the player out of the collision
             float dotFac = Vector2.Dot(velocity, collisionDir);
             velocity -= collisionDir * dotFac * 5;

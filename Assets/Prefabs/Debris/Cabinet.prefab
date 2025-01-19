@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loot: 0
   flipped: 0
-  flippable: 1
-  flipTimeout: 0.05
   stringFlipStrength: 1
   weakFlipStrength: 0.5
+  health: 100
+  deathPart: {fileID: 5635558032301542077, guid: 60a919b38506e17488c4aa340fd75f1c, type: 3}

@@ -48,9 +48,13 @@ public class Projectile : MonoBehaviour
     {
         // Check if it's a bamboo instance
         BambooShoot bamboo = other.GetComponent<BambooShoot>();
+        Debris debris = other.GetComponent<Debris>();
         if (bamboo != null)
         {
             bamboo.Damage(damage);
+        } else if (debris != null)
+        {
+            debris.Flip(transform.position, velocity/5, damage);
         }
         else if (!other.CompareTag("NoBullet"))
         {
