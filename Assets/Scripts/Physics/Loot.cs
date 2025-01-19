@@ -10,7 +10,7 @@ public class Loot : MonoBehaviour
     private float anim = 0;
 
     private Vector2 velocity;
-    public float drag = 0.2f;
+    private float drag = 1f;
 
     public PlayerController pc;
     
@@ -37,7 +37,7 @@ public class Loot : MonoBehaviour
         if (lootID < 0)
         {
             Vector2 pos = new Vector2(transform.position.x, transform.position.z);
-            velocity -= (pos - pc.position).normalized * (Time.fixedDeltaTime * 5);
+            velocity -= (pos - pc.position).normalized * (Time.fixedDeltaTime * 10);
         }
         transform.position += new Vector3(velocity.x, 0, velocity.y) * Time.fixedDeltaTime;
         transform.position = new Vector3(transform.position.x, 0, transform.position.z);

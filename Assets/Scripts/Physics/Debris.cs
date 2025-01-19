@@ -33,7 +33,7 @@ public class Debris : MonoBehaviour
             {
                 loot = 0;
                 if (player.weapon >= player.lootObjects.Length - 1)
-                    StartCoroutine(SpawnMoney(25));
+                    StartCoroutine(SpawnMoney(5));
                 else
                 {
                     Loot spLoot = Instantiate(player.lootObjects[player.weapon + 1], transform.position, Quaternion.identity).GetComponent<Loot>();
@@ -43,7 +43,7 @@ public class Debris : MonoBehaviour
             {
                 loot = 0;
                 if (player.hasKeycard)
-                    StartCoroutine(SpawnMoney(50));
+                    StartCoroutine(SpawnMoney(10));
                 else
                 {
                     Loot spLoot = Instantiate(player.keyCard, transform.position, Quaternion.identity).GetComponent<Loot>();
