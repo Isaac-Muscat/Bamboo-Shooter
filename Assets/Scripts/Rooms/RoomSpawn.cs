@@ -561,6 +561,7 @@ public class RoomSpawn : MonoBehaviour
             CAMERA_ASSEMBLY.transform.position += dir * 0.1f;
             yield return new WaitForEndOfFrame();
         }
+        SceneManager.LoadScene("MenuScene");
     }
 
     void Lose(int x, int y)
