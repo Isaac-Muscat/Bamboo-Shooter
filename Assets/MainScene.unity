@@ -889,7 +889,7 @@ MonoBehaviour:
   - {fileID: 5606328045140233403, guid: f98ad181e360e8e43b11e9de6e51b86f, type: 3}
   - {fileID: 7627934333240285569, guid: fd5b2dfe7ae71f24784d33cf312da7e3, type: 3}
   numWeapons: 3
-  numKeycards: 100
+  numKeycards: 3
   floorState: 
   seeds: []
   CAMERA_ASSEMBLY: {fileID: 428886756}
