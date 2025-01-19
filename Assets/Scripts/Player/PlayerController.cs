@@ -139,12 +139,6 @@ public class PlayerController : MonoBehaviour
 
     private void CollisionCheck()
     {
-        // Check for walking on vines
-        if (roomManager.CollideBamboo(position))
-        {
-            Debug.Log("HIT!");
-        }
-        
         Vector2Int roundedPosTR = new Vector2Int(
             Mathf.RoundToInt(position.x + playerRadius), 
             Mathf.RoundToInt(position.y + playerRadius));
