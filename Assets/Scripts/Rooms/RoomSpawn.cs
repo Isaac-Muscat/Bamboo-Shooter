@@ -596,15 +596,17 @@ public class RoomSpawn : MonoBehaviour
         bambooAnimFrame++;
         
         // Apply any CPU side changes
-        
-        // SIMULATE - CPU copied prev image
-        bambooCS.SetTexture(0, "_Sim_IN", bambooSimCPU);
-        bambooCS.SetTexture(0, "_Sim_OUT", bambooSimTex_Out);
-        bambooCS.SetTexture(0, "_Vis_OUT", bambooTexture);
-        bambooCS.SetFloat("_rngOffset", Random.Range(0, 400));
-        bambooCS.SetFloat("_animFrame", bambooAnimFrame);
-        bambooCS.SetInt("_frameDelay", frameInterval);
-        bambooCS.Dispatch(0, bambooTexture.width / 8, bambooTexture.height / 8, 1);
+        for (int i = 0; i < 4; i++)
+        {
+            // SIMULATE - CPU copied prev image
+            bambooCS.SetTexture(0, "_Sim_IN", bambooSimCPU);
+            bambooCS.SetTexture(0, "_Sim_OUT", bambooSimTex_Out);
+            bambooCS.SetTexture(0, "_Vis_OUT", bambooTexture);
+            bambooCS.SetFloat("_rngOffset", Random.Range(0, 400));
+            bambooCS.SetFloat("_animFrame", bambooAnimFrame);
+            bambooCS.SetInt("_frameDelay", frameInterval);
+            bambooCS.Dispatch(0, bambooTexture.width / 8, bambooTexture.height / 8, 1);
+        }
         
         // COPY TO CPU -- Check and edit for collisions
         RenderTexture.active = bambooSimTex_Out;
