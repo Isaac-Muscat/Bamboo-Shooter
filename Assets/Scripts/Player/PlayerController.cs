@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        roomManager.frameInterval = PlayerPrefs.GetInt("GrowthFactor");
         // Init the level
         roomManager.GenerateRooms(this);
         roomManager.GenerateBamboo();
@@ -288,6 +290,12 @@ public class PlayerController : MonoBehaviour
     
     public void Win()
     {
-        // TODO: Load scene
+        int growthFactor = PlayerPrefs.GetInt("GrowthFactor");
+        if (growthFactor <= 1)
+        {
+            SceneManager.LoadScene("MenuScene");
+        }
+        PlayerPrefs.SetInt("GrowthFactor", growthFactor - 1);
+        SceneManager.LoadScene("MainScene");
     }
 }

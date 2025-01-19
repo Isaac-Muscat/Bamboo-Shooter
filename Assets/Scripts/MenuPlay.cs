@@ -8,7 +8,7 @@ public class MenuPlay : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        PlayerPrefs.SetInt("GrowthFactor", 6);
     }
 
     // Update is called once per frame
@@ -20,7 +20,6 @@ public class MenuPlay : MonoBehaviour
     {
         if (context.performed)
         {
-            Debug.Log("Wokred");
             SceneManager.LoadScene("MainScene");
         }
     }
