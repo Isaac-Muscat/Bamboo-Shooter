@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
         Debris debris = collider.GetComponent<Debris>();
         if (debris != null)
         {
-            debris.Flip(collisionPoint, collisionPoint - position);
+            debris.Flip(collisionPoint, collisionPoint - position + velocity);
         }
     }
     
