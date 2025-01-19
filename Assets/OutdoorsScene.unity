@@ -148,13 +148,13 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 300016.7
+  m_Intensity: 300000
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -210,13 +210,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157207112}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.018390749, y: -0.9705735, z: 0.07868728, w: 0.22684191}
+  m_LocalRotation: {x: 0.023690477, y: -0.96846795, z: 0.10136288, w: 0.2263498}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 9.27, y: -153.69, z: 0}
+  m_LocalEulerAnglesHint: {x: 11.95, y: -153.69, z: 0}
 --- !u!114 &157207115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1155,7 +1155,7 @@ MonoBehaviour:
   numRooms: 12
   minRoomSize: {x: 5, y: 5}
   maxRoomSize: {x: 15, y: 15}
-  numDebris: 0f0000001e0000001900000019000000
+  numDebris: 280000003c0000001900000005000000
   debrisPrefabs:
   - {fileID: 8088738857949237131, guid: 7a9536824e7e07f4185439081d69aaf0, type: 3}
   - {fileID: 1120186903122669304, guid: 017d0a2073d25f843a4885d10fbe6b18, type: 3}
