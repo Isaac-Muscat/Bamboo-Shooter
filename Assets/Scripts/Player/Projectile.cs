@@ -50,7 +50,7 @@ public class Projectile : MonoBehaviour
         BambooShoot bamboo = other.GetComponent<BambooShoot>();
         if (bamboo != null)
         {
-            
+            bamboo.Damage(damage);
         }
         else if (!other.CompareTag("NoBullet"))
         {

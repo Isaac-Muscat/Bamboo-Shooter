@@ -18,7 +18,7 @@ public class BambooShoot : MonoBehaviour
         
     }
 
-    void Damage(float damage)
+    public void Damage(float damage)
     {
         health -= damage;
         if (health < 0)

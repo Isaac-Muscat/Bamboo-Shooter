@@ -5201,7 +5201,7 @@ MonoBehaviour:
   drag: 0
   livingFrames: 10
   variance: 0.2
-  damage: 0.5
+  damage: 50
   deathPart: {fileID: 1489930400163162433, guid: 5cf6f6b1c1ddee2449fd868f99830fcc, type: 3}
   velocity: {x: 0, y: 0}
   fired: 0
