@@ -15,8 +15,13 @@ public struct PosStatePair
 {
     public Vector2Int pos;
     public BambooState state;
-    public PosStatePair(Vector2Int pos, BambooState state) { this.pos = pos; this.state = state; }
+
+    public PosStatePair(Vector2Int pos, BambooState state) { 
+        this.pos = pos;
+        this.state = state;
+    }
 };
+
 
 public class BambooSeed : MonoBehaviour
 {
@@ -28,11 +33,12 @@ public class BambooSeed : MonoBehaviour
     public const float branchingCountRangeFactor = 10;
     private float warningDistanceThreshold = 10;
 
-    private List<BambooShoot> spawnedBamboo = new List<BambooShoot>(); // List to store spawned prefabs
     public Dictionary<PosStatePair, int> spawnPossibilities = new Dictionary<PosStatePair, int>();
 
     // Grid
     public int[] bambooState;
+    public BambooShoot[] spawnedBambooX;
+    public BambooShoot[] spawnedBambooZ;
     public Vector2Int gridPos = new Vector2Int(0, 0);
 
     public PosStatePair tunnelVisionBamboo;
@@ -52,13 +58,25 @@ public class BambooSeed : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            PosStatePair selected = spawnedBamboo[Random.Range(0, spawnedBamboo.Count)].posState;
-            DeleteBamboo(selected);
-        }
     }
 
+    void AddBambooToSpawned(BambooShoot bamboo) {
+        if (bamboo.posState.state == BambooState.X)
+        {
+            spawnedBambooX[XYToIDX(bamboo.posState)] = bamboo;
+        } else if (bamboo.posState.state == BambooState.Z)
+        {
+            spawnedBambooZ[XYToIDX(bamboo.posState)] = bamboo;
+        }
+    }
+    public int XYToIDX(PosStatePair p)
+    {
+        int x = p.pos.x;
+        int y = p.pos.y;
+        if (x < 0 || y < 0) return -1;
+        if (x >= roomSpawn.buildingDimensions.x || y >= roomSpawn.buildingDimensions.x) return -1;
+        return x + y * roomSpawn.buildingDimensions.x;
+    }
     public int XYToIDX(int x, int y)
     {
         if (x < 0 || y < 0) return -1;
@@ -144,6 +162,7 @@ public class BambooSeed : MonoBehaviour
         if (idx < 0) return null;
         if (state == BambooState.EMPTY)
         {
+            Debug.LogError("WARNING NOT IMPLEMENTED");
             bambooState[idx] = 0;
             DeleteBamboo(idx);
             return null;
@@ -164,7 +183,7 @@ public class BambooSeed : MonoBehaviour
         BambooShoot newBamboo = Instantiate(bambooPrefab1, position, rotation).GetComponent<BambooShoot>();
         newBamboo.posState = cur_possibility;
         newBamboo.seed = this;
-        spawnedBamboo.Add(newBamboo);
+        AddBambooToSpawned(newBamboo);
         if ((gridPos - newBamboo.posState.pos).magnitude > warningDistanceThreshold)
         {
             IssueWarning();
@@ -189,33 +208,37 @@ public class BambooSeed : MonoBehaviour
     }
     public void DeleteBamboo(int idx)
     {
-        foreach (BambooShoot bambmooShoot in spawnedBamboo)
+        BambooShoot destroyx = spawnedBambooX[idx];
+        BambooShoot destroyz = spawnedBambooZ[idx];
+
+        if (destroyx != null)
         {
-            if (XYToIDX(bambmooShoot.posState.pos.x, bambmooShoot.posState.pos.y) == idx)
-            {
-                Destroy(bambmooShoot.gameObject);
-                spawnedBamboo.Remove(bambmooShoot);
-                // FIXME Need to decrement neigbours from list of possible growth options
-            }
+            Destroy(destroyx.gameObject);
+            spawnedBambooX[idx] = null;
+            // FIXME Need to decrement neigbours from list of possible growth options
         }
+        if (destroyz != null)
+        {
+            Destroy(destroyz.gameObject);
+            spawnedBambooZ[idx] = null;
+            // FIXME Need to decrement neigbours from list of possible growth options
+        }
+
     }
     public void DeleteBamboo(PosStatePair posState)
     {
-        BambooShoot to_delete = null;
-        foreach (BambooShoot bambooShoot in spawnedBamboo)
+        int idx = XYToIDX(posState);
+        if (posState.state == BambooState.X)
         {
-            if (bambooShoot.posState.pos.x == posState.pos.x && bambooShoot.posState.pos.y == posState.pos.y &&
-                bambooShoot.posState.state == posState.state)
-            {
-                to_delete = bambooShoot;
-                break;
-            }
-        }
-        if (to_delete != null)
-        {
+            BambooShoot to_delete = spawnedBambooX[idx];
             Destroy(to_delete.gameObject);
-            spawnedBamboo.Remove(to_delete);
-            // FIXME Need to remove neigbours from list of possible growth options
+            spawnedBambooX[idx] = null;
+            AddGrowthPossibilities(posState, -1);
+        } else if (posState.state == BambooState.Z)
+        {
+            BambooShoot to_delete = spawnedBambooZ[idx];
+            Destroy(to_delete.gameObject);
+            spawnedBambooZ[idx] = null;
             AddGrowthPossibilities(posState, -1);
         }
     }
@@ -260,7 +283,7 @@ public class BambooSeed : MonoBehaviour
             selected = ClosestBambooShoot();
         }
 
-        while (spawnPossibilities[selected] == 0)
+        while (spawnPossibilities[selected] <= 0)
         {
             spawnPossibilities.Remove(selected);
             selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
@@ -305,7 +328,7 @@ public class BambooSeed : MonoBehaviour
         } else
         {
             PosStatePair selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
-            while (spawnPossibilities[selected] == 0)
+            while (spawnPossibilities[selected] <= 0)
             {
                 spawnPossibilities.Remove(selected);
                 selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];

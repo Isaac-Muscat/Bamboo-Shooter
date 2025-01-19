@@ -23,6 +23,8 @@ public class BambooManager : MonoBehaviour
         newBambooSeed.gridPos = new Vector2Int(roomSpawn.buildingDimensions.x / 2, roomSpawn.buildingDimensions.y / 2);
         newBambooSeed.transform.position = new Vector3(newBambooSeed.gridPos.x, 0, newBambooSeed.gridPos.y);
         newBambooSeed.bambooState = new int[roomSpawn.buildingDimensions.x * roomSpawn.buildingDimensions.x];
+        newBambooSeed.spawnedBambooX = new BambooShoot[roomSpawn.buildingDimensions.x * roomSpawn.buildingDimensions.x];
+        newBambooSeed.spawnedBambooZ = new BambooShoot[roomSpawn.buildingDimensions.x * roomSpawn.buildingDimensions.x];
         newBambooSeed.spawnPossibilities[new PosStatePair(newBambooSeed.gridPos, BambooState.X)] = 1;
         newBambooSeed.spawnPossibilities[new PosStatePair(newBambooSeed.gridPos, BambooState.Z)] = 1;
         newBambooSeed.roomSpawn = roomSpawn;
