@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics.Geometry;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
+using UnityEngine.SceneManagement;
+using static UnityEditor.PlayerSettings;
 using Random = UnityEngine.Random;
 
 public class RoomSpawn : MonoBehaviour
@@ -32,6 +35,7 @@ public class RoomSpawn : MonoBehaviour
 
     [Header("References")]
     public List<RoomSeed> seeds;
+    public GameObject CAMERA_ASSEMBLY;
 
     [Header("Game State")]
     public int spawnSeed = 0;
@@ -49,6 +53,7 @@ public class RoomSpawn : MonoBehaviour
     private RenderTexture bambooSimTex_Out;
     public Texture2D bambooSimCPU;
     private int bambooAnimFrame = 0;
+    Vector3 loseBambooPos;
 
     public int XYToIDX_ROOM(int x, int y)
     {
@@ -538,7 +543,29 @@ public class RoomSpawn : MonoBehaviour
         
         bambooPlane.material.mainTexture = bambooTexture;
     }
-    
+
+    public IEnumerator PanCamera()
+    {
+        while ((CAMERA_ASSEMBLY.transform.position - loseBambooPos).magnitude > 0.5)
+        {
+            Vector3 dir = (loseBambooPos - CAMERA_ASSEMBLY.transform.position).normalized;
+            CAMERA_ASSEMBLY.transform.position += dir * 0.1f;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    void Lose(Vector2Int losPos)
+    {
+        loseBambooPos = new Vector3(losPos.x, 0, losPos.y);
+        Debug.Log("Lose");
+        Time.timeScale = 0;
+        StartCoroutine(PanCamera());
+    }
+
+    Vector2Int GetPixelSpace(int x, int y) { 
+        return new Vector2Int(Mathf.FloorToInt(bambooSimTex_Out.width - x * bambooScale), Mathf.RoundToInt(bambooSimTex_Out.height - y * bambooScale));
+    }
+
     private void FixedUpdate()
     {
         if (bambooSimCPU == null) return;
@@ -568,6 +595,24 @@ public class RoomSpawn : MonoBehaviour
         //bambooSimCPU.SetPixel((at +i),j, new Color(1,0,0) );
         bambooSimCPU.Apply();
         //RenderTexture.active = Camera.main.targetTexture; 
+
+        // Lose Condition
+        Vector2Int bambooBounds = GetPixelSpace(bambooSimTex_Out.width, bambooSimTex_Out.height);
+        for (int x = 0; x < bambooSimCPU.width/bambooScale; x++)
+        {
+            Vector2Int coord = GetPixelSpace(x, 0);
+            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(coord);
+            coord = GetPixelSpace(x, bambooSimTex_Out.height);
+            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(coord);
+        }
+        for (int y = 0; y < bambooSimCPU.height/bambooScale; y++)
+        {
+            Vector2Int coord = GetPixelSpace(0, y);
+            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(coord);
+            coord = GetPixelSpace(bambooSimTex_Out.width, y);
+            if (bambooSimCPU.GetPixel(coord.x, coord.y).r > 0) Lose(coord);
+        }
+        Debug.Log(bambooSimCPU.width + " " + bambooSimCPU.height);
     }
 
     public bool CollideBamboo(Vector2 pos)
