@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
     [Header("Audio")] 
     public AudioSource source1;
     public AudioSource source2;
+    public AudioSource keycardSFX;
 
     void Start()
     {
@@ -265,6 +266,7 @@ public class PlayerController : MonoBehaviour
 
     public void GetKey()
     {
+        keycardSFX.Play();
         Time.timeScale = 0;
         StartCoroutine(Pan());
         //TODO: Music

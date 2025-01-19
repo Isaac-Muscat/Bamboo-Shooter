@@ -15,6 +15,7 @@ public class Projectile : MonoBehaviour
     public Vector2 velocity;
     public bool fired = false;
     public RoomSpawn roomMan;
+    public GameObject grassDie;
 
     public void Fire(Vector2 pos, Vector2 dir)
     {
@@ -49,6 +50,7 @@ public class Projectile : MonoBehaviour
             Vector2 pos = startBullet + step * i;
             if (roomMan.CollideBamboo(pos))
             {
+                Instantiate(grassDie, transform.position - new Vector3(velocity.x, 0, velocity.y)*Time.fixedDeltaTime, Quaternion.identity);
                 Instantiate(deathPart, transform.position - new Vector3(velocity.x, 0, velocity.y)*Time.fixedDeltaTime, Quaternion.identity);
                 Destroy(gameObject);
                 break;
