@@ -26,7 +26,7 @@ public class BambooManager : MonoBehaviour
         newBambooSeed.spawnPossibilities[new PosStatePair(newBambooSeed.gridPos, BambooState.X)] = 1;
         newBambooSeed.spawnPossibilities[new PosStatePair(newBambooSeed.gridPos, BambooState.Z)] = 1;
         newBambooSeed.roomSpawn = roomSpawn;
-        newBambooSeed.tunnelVisionChance = 0.2f;
+        newBambooSeed.tunnelVisionChance = 0.00f;
         newBambooSeed.tunnelVisionCountRangeMAX = 6;
 
         // Add the spawned prefab to the list
