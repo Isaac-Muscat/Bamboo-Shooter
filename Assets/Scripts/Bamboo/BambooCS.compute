@@ -7,6 +7,7 @@ RWTexture2D<float4>     _Vis_OUT;
 
 float _rngOffset;
 int _animFrame;
+int _frameDelay;
 
 float random (float2 uv)
 {
@@ -97,7 +98,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
     // Try to grow
 
-    if (_animFrame % 6 != 0) return;
+    if (_animFrame % _frameDelay != 0) return;
     
     float chance = Unity_GradientNoise_float(id.xy + float2(_animFrame/5.0f, 0), 0.1);
     chance += random(id.xy + float2(_rngOffset, 0));

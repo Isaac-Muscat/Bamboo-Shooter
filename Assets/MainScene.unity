@@ -892,13 +892,13 @@ MonoBehaviour:
   numKeycards: 100
   floorState: 
   seeds: []
-  CAMERA_ASSEMBLY: {fileID: 428886756}
+  CAMERA_ASSEMBLY: {fileID: 0}
   spawnSeed: 0
   unexploredSeeds: 
   exploredTiles: 
   centerWalls: []
   centerWallTiles: 
-  frameInterval: 0
+  frameInterval: 4
   bambooScale: 10
   bambooPlane: {fileID: 1204316751}
   bambooCS: {fileID: 7200000, guid: 94a37d946ab981a4fba1025bf4a53635, type: 3}

@@ -596,6 +596,7 @@ public class RoomSpawn : MonoBehaviour
         bambooCS.SetTexture(0, "_Vis_OUT", bambooTexture);
         bambooCS.SetFloat("_rngOffset", Random.Range(0, 400));
         bambooCS.SetFloat("_animFrame", bambooAnimFrame);
+        bambooCS.SetInt("_frameDelay", frameInterval);
         bambooCS.Dispatch(0, bambooTexture.width / 8, bambooTexture.height / 8, 1);
         
         // COPY TO CPU -- Check and edit for collisions
