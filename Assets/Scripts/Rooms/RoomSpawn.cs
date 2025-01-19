@@ -151,8 +151,25 @@ public class RoomSpawn : MonoBehaviour
         // TODO: Generate the door to the center room
         
         // Spawn debris
-        
-        //for (int d = 0; d < debrisPrefab.Length)
+
+        List<int> invalidSpots = new List<int>();
+        for (int d = 0; d < debrisPrefabs.Length; d++)
+        {
+            
+            for (int i = 0; i < numDebris[d]; i++)
+            {
+                int spawnX = Random.Range(1, buildingDimensions.x - 2);
+                int spawnY = Random.Range(1, buildingDimensions.y - 2);
+
+                int debrisIdx = XYToIDX(spawnX, spawnY);
+                if (GetTile(spawnX, spawnY) == 1 && !invalidSpots.Contains(debrisIdx))
+                {
+                    // SPAWN THE DEBRIS
+                    Instantiate(debrisPrefabs[d], new Vector3(spawnX, 0.5f, spawnY), Quaternion.identity);
+                    invalidSpots.Add(debrisIdx);
+                }
+            }
+        }
 
         // Draw the room
         for (int i = 0; i < floorState.Length; i++)
