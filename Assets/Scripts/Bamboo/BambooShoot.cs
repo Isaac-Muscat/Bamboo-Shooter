@@ -5,6 +5,7 @@ public class BambooShoot : MonoBehaviour
     public GameObject explodeParticleSystemPrefab;
     public PosStatePair posState;
     public BambooSeed seed;
+    public BambooShoot child = null;
     public float health = 100;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
