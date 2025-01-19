@@ -30,7 +30,7 @@ public class BambooShoot : MonoBehaviour
 
     void Kill()
     {
-        Instantiate(explodeParticleSystemPrefab);
+        Instantiate(explodeParticleSystemPrefab, transform.position, Quaternion.identity);
         seed.DeleteBamboo(posState);
     }
 }
