@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [Header("Player References")]
     public Transform playerBody;
     public Transform cameraAssembly;
+    private Camera mainCam;
+    public Transform crosshair;
     public MeshFilter playerMesh;
     
 
@@ -31,6 +33,9 @@ public class PlayerController : MonoBehaviour
     [Header("Input")]
     private Vector2 lastInput = Vector2.zero;
     private Vector2 lastLookDir = Vector2.up;
+    private Vector2 lastPointInput = Vector2.zero;
+    private Vector2 lastMouseInput = Vector2.zero;
+    private bool firing = false;
 
     void Start()
     {
@@ -41,6 +46,8 @@ public class PlayerController : MonoBehaviour
         position = roomManager.seeds[roomManager.spawnSeed].pos;
         playerBody.position = new Vector3(position.x, 0, position.y);
         cameraAssembly.position = playerBody.position;
+
+        mainCam = Camera.main;
     }
     
     // PHYSICS
@@ -61,10 +68,6 @@ public class PlayerController : MonoBehaviour
             position += qStep;
             CollisionCheck();
         }
-        
-        // Calculate Look direction
-        if (lastInput != Vector2.zero) lastLookDir = lastInput.normalized;
-        playerMesh.transform.LookAt(playerMesh.transform.position - new Vector3(lastLookDir.x, 0, lastLookDir.y), Vector3.up);
 
         // Animate the player
         if (velocity.magnitude > 0.1)
@@ -89,6 +92,17 @@ public class PlayerController : MonoBehaviour
         
         playerBody.position = new Vector3(position.x, 0, position.y);
         cameraAssembly.position = playerBody.position;
+        
+        // UPDATE THE LOOK DIR / CORSSHAIR
+        Vector3 crosshairPos = mainCam.ViewportToWorldPoint(new Vector3(lastPointInput.x * 0.2f + 0.5f, lastPointInput.y * 0.2f + 0.5f, 4));
+        crosshair.position = crosshairPos;
+
+        if (lastPointInput == Vector2.zero)
+        {
+            if (lastInput != Vector2.zero) lastLookDir = lastInput.normalized;
+        }
+        else lastLookDir = lastPointInput;
+        playerMesh.transform.LookAt(playerMesh.transform.position - new Vector3(lastLookDir.x, 0, lastLookDir.y), Vector3.up);
     }
 
     private void CollisionCheck()
@@ -159,7 +173,12 @@ public class PlayerController : MonoBehaviour
         Debris debris = collider.GetComponent<Debris>();
         if (debris != null)
         {
-            debris.Flip(collisionPoint, collisionPoint - position + velocity);
+            Vector2 collisionDir = collisionPoint - position;
+            debris.Flip(collisionPoint, collisionDir + velocity);
+            // move the player out of the collision
+            float dotFac = Vector2.Dot(velocity, collisionDir);
+            velocity -= collisionDir * dotFac * 5;
+            position -= collisionDir * dotFac * Time.fixedDeltaTime;
         }
     }
     
@@ -175,6 +194,28 @@ public class PlayerController : MonoBehaviour
         } else if (context.canceled)
         {
             lastInput = Vector2.zero;
+        }
+    }
+    
+    public void Look(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            lastPointInput = context.ReadValue<Vector2>().normalized;
+        } else if (context.canceled)
+        {
+            lastPointInput = Vector2.zero;
+        }
+    }
+    
+    public void Shoot(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            firing = true;
+        } else if (context.canceled)
+        {
+            firing = false;
         }
     }
 }
