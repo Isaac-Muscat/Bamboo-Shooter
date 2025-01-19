@@ -52,7 +52,7 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // Check if it's a bamboo instance
-        BambooShoot bamboo = other.GetComponent<BambooShoot>();
+        BambooDamage bamboo = other.GetComponent<BambooDamage>();
         Debris debris = other.GetComponent<Debris>();
         if (bamboo != null)
         {

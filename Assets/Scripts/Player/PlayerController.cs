@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Global References")]
     public RoomSpawn roomManager;
+    public BambooDamage bambooDamage;
 
     [Header("Player References")]
     public Transform playerBody;
@@ -56,6 +57,7 @@ public class PlayerController : MonoBehaviour
         // Init the level
         roomManager.GenerateRooms(this);
         roomManager.GenerateBamboo();
+        bambooDamage.pc = this;
         //return;
         position = roomManager.seeds[roomManager.spawnSeed].pos;
         playerBody.position = new Vector3(position.x, 0, position.y);
@@ -288,5 +290,10 @@ public class PlayerController : MonoBehaviour
         source1.volume = 0;
         source2.volume = 1;
         StartCoroutine(roomManager.LowerWalls());
+    }
+    
+    public void Win()
+    {
+        // TODO: Load scene
     }
 }

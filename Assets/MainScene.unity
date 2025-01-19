@@ -1133,6 +1133,7 @@ GameObject:
   - component: {fileID: 1708319844}
   - component: {fileID: 1708319843}
   - component: {fileID: 1708319842}
+  - component: {fileID: 1708319846}
   m_Layer: 0
   m_Name: Seed
   m_TagString: Untagged
@@ -1184,7 +1185,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7fb563e3aab7c9e469e393fbb7fd2784, type: 2}
+  - {fileID: 2100000, guid: 71e7363d73088f2419cb8be4f646a208, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1229,6 +1230,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1708319846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708319841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cb95e6d081243440987b4883cb9e5e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 400
+  pc: {fileID: 0}
 --- !u!1 &1787675218
 GameObject:
   m_ObjectHideFlags: 0
@@ -2162,6 +2177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomManager: {fileID: 1449892118}
+  bambooDamage: {fileID: 1708319846}
   playerBody: {fileID: 7975782738382700935}
   cameraAssembly: {fileID: 428886757}
   mainCam: {fileID: 1823688466}
