@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 public enum BambooState
 {
     EMPTY = 0,
@@ -115,6 +117,12 @@ public class BambooSeed : MonoBehaviour
             CAMERA_ASSEMBLY.transform.position += dir * 0.1f;
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    void Win()
+    {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
     }
 
     void Lose(BambooShoot newBamboo)
@@ -297,6 +305,11 @@ public class BambooSeed : MonoBehaviour
         } else
         {
             PosStatePair selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
+            while (spawnPossibilities[selected] == 0)
+            {
+                spawnPossibilities.Remove(selected);
+                selected = new List<PosStatePair>(spawnPossibilities.Keys)[Random.Range(0, spawnPossibilities.Count)];
+            }
             SetTile(selected.pos.x, selected.pos.y, selected.state);
 
             if (Random.Range(0.0f, 1.0f) < tunnelVisionChance)
