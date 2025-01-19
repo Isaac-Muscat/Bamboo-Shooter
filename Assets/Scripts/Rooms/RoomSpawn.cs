@@ -6,7 +6,7 @@ using Unity.Mathematics.Geometry;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.SceneManagement;
-using static UnityEditor.PlayerSettings;
+//using static UnityEditor.PlayerSettings;
 using Random = UnityEngine.Random;
 
 public class RoomSpawn : MonoBehaviour
