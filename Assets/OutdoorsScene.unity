@@ -993,7 +993,7 @@ MonoBehaviour:
   tiles:
   - {fileID: 5739203773725724705, guid: 863c2f76049c6d547a18fa5679489f3b, type: 3}
   - {fileID: 5739203773725724705, guid: 863c2f76049c6d547a18fa5679489f3b, type: 3}
-  - {fileID: 5802518617912384033, guid: a67cc4f1d49cc3042aee4b198e57d889, type: 3}
+  - {fileID: 919132149155446097, guid: 36905e005d1b4354caed553f87e3a41e, type: 3}
   - {fileID: 5739203773725724705, guid: 863c2f76049c6d547a18fa5679489f3b, type: 3}
   roomSeedPrefab: {fileID: 335482855495926527, guid: 3f6c1abeafa913441aa2839f0465b0cd, type: 3}
   regenerate: 0
@@ -1811,15 +1811,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6241130915198383026, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 3.08
       objectReference: {fileID: 0}
     - target: {fileID: 6241130915198383026, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.43
       objectReference: {fileID: 0}
     - target: {fileID: 6241130915198383026, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 10.05
       objectReference: {fileID: 0}
     - target: {fileID: 6241130915198383026, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1848,6 +1848,22 @@ PrefabInstance:
     - target: {fileID: 6241130915198383026, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8020956809606894952, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
+      propertyPath: m_Intensity
+      value: 131072
+      objectReference: {fileID: 0}
+    - target: {fileID: 8020956809606894952, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8104535250416526208, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
+      propertyPath: m_VolumetricDimmer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8104535250416526208, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
+      propertyPath: m_UseContactShadow.m_Override
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
