@@ -121,5 +121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6481677a3b11fe43beb62f1804284e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explodeParticleSystemPrefab: {fileID: 8301495097312783143, guid: e9bc3ca4f70ded14a967887d5fd83ace, type: 3}
   seed: {fileID: 0}
   health: 100
