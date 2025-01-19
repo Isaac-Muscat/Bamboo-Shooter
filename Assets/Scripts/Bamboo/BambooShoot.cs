@@ -18,6 +18,15 @@ public class BambooShoot : MonoBehaviour
         
     }
 
+    void Damage(float damage)
+    {
+        health -= damage;
+        if (health < 0)
+        {
+            Kill();
+        }
+    }
+
     void Kill()
     {
         seed.DeleteBamboo(posState);
