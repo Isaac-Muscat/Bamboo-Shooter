@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Projectile : MonoBehaviour
 {
@@ -7,6 +9,8 @@ public class Projectile : MonoBehaviour
     public float drag = 0;
     public int livingFrames = 1;
     public float variance = 0.2f;
+    public float damage = 0.5f;
+    public GameObject deathPart;
     [Header("State")]
     public Vector2 velocity;
     public bool fired = false;
@@ -19,6 +23,7 @@ public class Projectile : MonoBehaviour
         Vector2 cross = Vector2.Perpendicular(dir);
         float varianceRand = Random.Range(-variance, variance);
         velocity += cross * (speed * varianceRand);
+        GetComponent<Rigidbody>().AddForce(new Vector3(velocity.x, 0, velocity.y), ForceMode.Impulse);
     }
 
     // Update is called once per frame
@@ -27,14 +32,30 @@ public class Projectile : MonoBehaviour
         if (!fired) return;
         if (livingFrames <= 0)
         {
+            Instantiate(deathPart, transform.position, Quaternion.identity);
             Destroy(gameObject);
             return;
         }
         
         livingFrames--;
-        velocity *= (drag * Time.fixedDeltaTime) + 1;
-        transform.position += new Vector3(velocity.x, 0, velocity.y) * Time.fixedDeltaTime;
+        //velocity *= (drag * Time.fixedDeltaTime) + 1;
+        //transform.position += new Vector3(velocity.x, 0, velocity.y) * Time.fixedDeltaTime;
         
         // TODO: Raycast
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // Check if it's a bamboo instance
+        BambooShoot bamboo = other.GetComponent<BambooShoot>();
+        if (bamboo != null)
+        {
+            
+        }
+        else if (!other.CompareTag("NoBullet"))
+        {
+            Instantiate(deathPart, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 }

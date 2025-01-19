@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
         {
             currentWeaponDelay = weaponDelays[weapon];
             Projectile fired = Instantiate(weaponAttackPrefabs[weapon], transform).GetComponent<Projectile>();
-            fired.Fire(position, lastLookDir);
+            fired.Fire(position + lastLookDir*0.5f, lastLookDir);
         }
     }
 
