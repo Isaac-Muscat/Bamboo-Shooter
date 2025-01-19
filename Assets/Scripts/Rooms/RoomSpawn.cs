@@ -18,6 +18,9 @@ public class RoomSpawn : MonoBehaviour
     public Vector2Int minRoomSize = new Vector2Int(5, 5);
     public Vector2Int maxRoomSize = new Vector2Int(20, 20);
     
+    public int[] numDebris;
+    public GameObject[] debrisPrefabs;
+    
 
     public int[] floorState;
 
@@ -147,7 +150,9 @@ public class RoomSpawn : MonoBehaviour
         
         // TODO: Generate the door to the center room
         
-
+        // Spawn debris
+        
+        //for (int d = 0; d < debrisPrefab.Length)
 
         // Draw the room
         for (int i = 0; i < floorState.Length; i++)
