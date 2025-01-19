@@ -930,7 +930,7 @@ MonoBehaviour:
   bambooSeedPrefab: {fileID: 3587265966825318793, guid: dbd3cbc3067425142a39cdd72dc19ee6, type: 3}
   roomSpawn: {fileID: 1449892118}
   numSeedsToSpawn: 5
-  bambooGrowSpeed: 1
+  bambooGrowSpeed: 0.35
 --- !u!4 &1137117886
 Transform:
   m_ObjectHideFlags: 0
@@ -1444,13 +1444,11 @@ MonoBehaviour:
   bambooManager: {fileID: 1137117885}
   playerBody: {fileID: 7975782738382700935}
   cameraAssembly: {fileID: 428886757}
-  crosshair: {fileID: 517084211}
+  crosshair: {fileID: 0}
   playerMesh: {fileID: 6147247620031345565}
   weapon: 0
-  weaponAttackPrefabs:
-  - {fileID: 4210314850670997667, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
-  weaponDelays:
-  - 0.05
+  weaponAttackPrefabs: []
+  weaponDelays: []
   playerRadius: 0.4
   drag: 20
   accelMultiplier: 200

@@ -2,23 +2,21 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+public enum BambooState
+{
+    EMPTY = 0,
+    X = 1 << 0,
+    Z = 1 << 1
+}
+public struct PosStatePair
+{
+    public Vector2Int pos;
+    public BambooState state;
+    public PosStatePair(Vector2Int pos, BambooState state) { this.pos = pos; this.state = state; }
+};
 
 public class BambooSeed : MonoBehaviour
 {
-    public enum BambooState
-    {
-        EMPTY = 0,
-        X     = 1 << 0,
-        Z     = 1 << 1
-    }
-
-    public struct PosStatePair
-    {
-        public Vector2Int pos;
-        public BambooState state;
-        public PosStatePair(Vector2Int pos, BambooState state) { this.pos = pos; this.state = state; }
-    };
-
     public RoomSpawn roomSpawn;
     public GameObject bambooPrefab1; // Assign your prefab in the Inspector
 
@@ -116,6 +114,7 @@ public class BambooSeed : MonoBehaviour
         AddGrowthPossibilities(cur_possibility);
         spawnPossibilities.Remove(cur_possibility);
         BambooShoot newBamboo = Instantiate(bambooPrefab1, position, rotation).GetComponent<BambooShoot>();
+        newBamboo.seed = this;
         spawnedBamboo.Add(newBamboo);
         return newBamboo;
     }
@@ -130,12 +129,11 @@ public class BambooSeed : MonoBehaviour
     {
         return (BambooState)Random.Range(1, 3);
     }
-
-    void DeleteBamboo(int idx)
+    public void DeleteBamboo(int idx)
     {
         foreach (BambooShoot bambmooShoot in spawnedBamboo)
         {
-            if (XYToIDX(bambmooShoot.gridPos.x, bambmooShoot.gridPos.y) == idx)
+            if (XYToIDX(bambmooShoot.posState.pos.x, bambmooShoot.posState.pos.y) == idx)
             {
                 Destroy(bambmooShoot.gameObject);
                 spawnedBamboo.Remove(bambmooShoot);
@@ -143,6 +141,20 @@ public class BambooSeed : MonoBehaviour
             }
         }
     }
+    public void DeleteBamboo(PosStatePair posState)
+    {
+        foreach (BambooShoot bambooShoot in spawnedBamboo)
+        {
+            if (bambooShoot.posState.pos.x == posState.pos.x && bambooShoot.posState.pos.y == posState.pos.y &&
+                bambooShoot.posState.state == posState.state)
+            {
+                Destroy(bambooShoot.gameObject);
+                spawnedBamboo.Remove(bambooShoot);
+                // FIXME Need to remove neigbours from list of possible growth options
+            }
+        }
+    }
+
 
     PosStatePair SelectTunnelVisionBamboo()
     {
