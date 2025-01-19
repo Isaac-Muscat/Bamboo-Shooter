@@ -562,6 +562,7 @@ public class RoomSpawn : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         Time.timeScale = 1.0f;
+        PlayerPrefs.SetInt("GrowthFactor", 6);
         SceneManager.LoadScene("MenuScene");
     }
 

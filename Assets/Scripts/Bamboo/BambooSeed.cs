@@ -137,12 +137,6 @@ public class BambooSeed : MonoBehaviour
         }
     }
 
-    void Win()
-    {
-        string currentSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentSceneName);
-    }
-
     void Lose(BambooShoot newBamboo)
     {
         loseBambooPos = new Vector3(newBamboo.posState.pos.x, 0, newBamboo.posState.pos.y);
