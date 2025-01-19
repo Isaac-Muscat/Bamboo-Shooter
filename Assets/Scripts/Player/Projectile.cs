@@ -32,7 +32,7 @@ public class Projectile : MonoBehaviour
         if (!fired) return;
         if (livingFrames <= 0)
         {
-            Instantiate(deathPart, transform.position, Quaternion.identity);
+            Instantiate(deathPart, transform.position - new Vector3(velocity.x, 0, velocity.y)*Time.fixedDeltaTime, Quaternion.identity);
             Destroy(gameObject);
             return;
         }
@@ -54,7 +54,7 @@ public class Projectile : MonoBehaviour
         }
         else if (!other.CompareTag("NoBullet"))
         {
-            Instantiate(deathPart, transform.position, Quaternion.identity);
+            Instantiate(deathPart, transform.position - new Vector3(velocity.x, 0, velocity.y)*Time.fixedDeltaTime, Quaternion.identity);
             Destroy(gameObject);
         }
     }

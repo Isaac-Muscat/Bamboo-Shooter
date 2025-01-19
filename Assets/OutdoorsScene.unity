@@ -420,38 +420,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a9536824e7e07f4185439081d69aaf0, type: 3}
---- !u!1 &322846857 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4210314850670997667, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
-  m_PrefabInstance: {fileID: 8358968186250178295}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &322846863
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 322846857}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!1 &428886756
 GameObject:
   m_ObjectHideFlags: 0
@@ -1941,10 +1909,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4210314850670997667, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 322846863}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b16de31aa4f16948905508f4462ca56, type: 3}
 --- !u!65 &8950764677630341585
 BoxCollider:
@@ -1979,7 +1944,7 @@ GameObject:
   - component: {fileID: 8950764677630341585}
   - component: {fileID: 2444711344490805033}
   - component: {fileID: 3860367269299073128}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DebrisCollider
   m_TagString: NoBullet
   m_Icon: {fileID: 0}
