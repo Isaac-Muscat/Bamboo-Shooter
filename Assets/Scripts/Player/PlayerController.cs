@@ -130,22 +130,22 @@ public class PlayerController : MonoBehaviour
 
         // GENERATE A COLLISION CODE
         int collisionCode = 0;
-        if (roomManager.GetTile(roundedPosTR.x, roundedPosTR.y) == 2)
+        if (roomManager.GetTile(roundedPosTR.x, roundedPosTR.y) % 2 == 0)
         {
             // COLLISION ON TR
             collisionCode |= 0b0001;
         }
-        if (roomManager.GetTile(roundedPosBL.x, roundedPosTR.y) == 2)
+        if (roomManager.GetTile(roundedPosBL.x, roundedPosTR.y) % 2 == 0)
         {
             // COLLISION ON TL
             collisionCode |= 0b0010;
         }
-        if (roomManager.GetTile(roundedPosTR.x, roundedPosBL.y) == 2)
+        if (roomManager.GetTile(roundedPosTR.x, roundedPosBL.y) % 2 == 0)
         {
             // COLLISION ON BR
             collisionCode |= 0b0100;
         }
-        if (roomManager.GetTile(roundedPosBL.x, roundedPosBL.y) == 2)
+        if (roomManager.GetTile(roundedPosBL.x, roundedPosBL.y) % 2 == 0)
         {
             // COLLISION ON BL
             collisionCode |= 0b1000;

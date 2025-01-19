@@ -90,13 +90,17 @@ public class RoomSpawn : MonoBehaviour
         // Set the walls around the building
         for (int x = 0; x < buildingDimensions.x; x++)
         {
-            SetTile(x, 0, 2);
-            SetTile(x, buildingDimensions.y-1, 2);
+            int wallType = 2;
+            if ((x + 1) % 4 < 3) wallType = 4;
+            SetTile(x, 0, wallType);
+            SetTile(x, buildingDimensions.y-1, wallType);
         }
         for (int y = 0; y < buildingDimensions.y; y++)
         {
-            SetTile(0, y, 2);
-            SetTile(buildingDimensions.x-1, y, 2);
+            int wallType = 2;
+            if ((y + 1) % 4 < 3) wallType = 4;
+            SetTile(0, y, wallType);
+            SetTile(buildingDimensions.x-1, y, wallType);
         }
 
         // spawn a bunch of rooms
