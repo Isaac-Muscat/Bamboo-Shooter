@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BambooShoot : MonoBehaviour
 {
+    public GameObject explodeParticleSystemPrefab;
     public PosStatePair posState;
     public BambooSeed seed;
     public float health = 100;
@@ -29,6 +30,7 @@ public class BambooShoot : MonoBehaviour
 
     void Kill()
     {
+        Instantiate(explodeParticleSystemPrefab);
         seed.DeleteBamboo(posState);
     }
 }
