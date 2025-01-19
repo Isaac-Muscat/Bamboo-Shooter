@@ -41,11 +41,20 @@ public class Projectile : MonoBehaviour
         livingFrames--;
         //velocity *= (drag * Time.fixedDeltaTime) + 1;
         //transform.position += new Vector3(velocity.x, 0, velocity.y) * Time.fixedDeltaTime;
-        if (roomMan.CollideBamboo(new Vector2(transform.position.x, transform.position.z)))
+        // stepped collision check
+        Vector2 startBullet = new Vector2(transform.position.x, transform.position.z) - velocity * Time.fixedDeltaTime;
+        Vector2 step = velocity * Time.fixedDeltaTime / 10.0f;
+        for (int i = 0; i < 10; i++)
         {
-            Instantiate(deathPart, transform.position - new Vector3(velocity.x, 0, velocity.y)*Time.fixedDeltaTime, Quaternion.identity);
-            Destroy(gameObject);
+            Vector2 pos = startBullet + step * i;
+            if (roomMan.CollideBamboo(pos))
+            {
+                Instantiate(deathPart, transform.position - new Vector3(velocity.x, 0, velocity.y)*Time.fixedDeltaTime, Quaternion.identity);
+                Destroy(gameObject);
+                break;
+            }
         }
+        
         // TODO: Raycast
     }
 
